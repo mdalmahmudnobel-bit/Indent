@@ -1,0 +1,5999 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <base target="_top">
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MPDP Material Indent</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+      background: #f3f5f7;
+      color: #222;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select {
+      font-family: inherit;
+    }
+
+
+    /* ==================================================
+       LOGIN
+       ================================================== */
+
+    #loginPage {
+      min-height: 100vh;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #101820,
+          #263746
+        );
+
+      padding: 20px;
+    }
+
+    .login-box {
+
+      width: 100%;
+      max-width: 410px;
+
+      background: #ffffff;
+
+      border-radius: 12px;
+
+      padding: 32px;
+
+      box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.30);
+    }
+
+    .login-logo {
+
+      width: 72px;
+      height: 72px;
+
+      margin: 0 auto 12px;
+
+      border-radius: 12px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #e9eef2;
+
+      font-weight: bold;
+
+      font-size: 23px;
+
+      color: #273746;
+    }
+
+    .login-title {
+
+      text-align: center;
+
+      font-size: 23px;
+
+      font-weight: 700;
+
+      margin-bottom: 5px;
+    }
+
+    .login-subtitle {
+
+      text-align: center;
+
+      color: #777;
+
+      font-size: 13px;
+
+      margin-bottom: 25px;
+    }
+
+    .login-label {
+
+      display: block;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      margin-bottom: 6px;
+    }
+
+    .login-input {
+
+      width: 100%;
+
+      height: 45px;
+
+      border: 1px solid #cfd5da;
+
+      border-radius: 6px;
+
+      padding: 0 12px;
+
+      outline: none;
+
+      margin-bottom: 15px;
+
+      font-size: 14px;
+    }
+
+    .login-input:focus {
+
+      border-color: #263746;
+
+      box-shadow:
+        0 0 0 2px
+        rgba(38,55,70,.10);
+    }
+
+    .login-button {
+
+      width: 100%;
+
+      height: 46px;
+
+      border: none;
+
+      border-radius: 6px;
+
+      background: #263746;
+
+      color: white;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      font-size: 14px;
+    }
+
+    .login-button:hover {
+      background: #162531;
+    }
+
+    .login-error {
+
+      display: none;
+
+      background: #ffe7e7;
+
+      color: #b00020;
+
+      border: 1px solid #ffc4c4;
+
+      padding: 10px;
+
+      border-radius: 6px;
+
+      margin-bottom: 15px;
+
+      font-size: 13px;
+    }
+
+
+    /* ==================================================
+       MAIN APP
+       ================================================== */
+
+    #appPage {
+      display: none;
+
+      min-height: 100vh;
+
+      background: #f3f5f7;
+    }
+
+
+    /* ==================================================
+       TOP HEADER
+       ================================================== */
+
+    .top-header {
+
+      height: 58px;
+
+      background: #111820;
+
+      color: white;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      padding: 0 20px;
+
+      box-shadow:
+        0 2px 5px
+        rgba(0,0,0,.20);
+    }
+
+    .brand {
+
+      font-size: 18px;
+
+      font-weight: 700;
+    }
+
+    .user-area {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      font-size: 13px;
+    }
+
+    .user-name {
+
+      color: #fff;
+    }
+
+    .role-badge {
+
+      background: #34495e;
+
+      border-radius: 20px;
+
+      padding: 5px 10px;
+
+      font-size: 11px;
+    }
+
+    .logout-btn {
+
+      border: none;
+
+      background: transparent;
+
+      color: #fff;
+
+      cursor: pointer;
+
+      font-size: 13px;
+
+      padding: 6px 4px;
+    }
+
+    .logout-btn:hover {
+      color: #ff7675;
+    }
+
+
+    /* ==================================================
+       MAIN WRAPPER
+       ================================================== */
+
+    .main-wrapper {
+
+      width: 100%;
+
+      max-width: 1500px;
+
+      margin: 0 auto;
+
+      padding: 14px;
+    }
+
+    .main-grid {
+      display: grid !important;
+      /* Left actions | Center indent form | Right email automation */
+      grid-template-columns: 190px minmax(0, 1fr) 250px !important;
+      grid-template-areas: "actions form email";
+      gap: 14px;
+      align-items: start;
+      width: 100%;
+    }
+
+    /* Explicit placement keeps the two sidebars on opposite sides. */
+    #appPage .main-grid > .form-card {
+      grid-area: form !important;
+      min-width: 0;
+      width: 100%;
+    }
+    #appPage .main-grid > .action-sidebar {
+      grid-area: actions !important;
+      min-width: 0;
+      width: 100%;
+      position: sticky;
+      top: 10px;
+    }
+    #appPage .main-grid > .side-panel:not(.action-sidebar) {
+      grid-area: email !important;
+      min-width: 0;
+      width: 100%;
+      position: sticky;
+      top: 10px;
+    }
+
+
+    /* ==================================================
+       FORM CARD
+       ================================================== */
+
+    .form-card {
+
+      background: #fff;
+
+      border: 1px solid #d9dde1;
+
+      border-radius: 4px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 1px 4px
+        rgba(0,0,0,.08);
+    }
+
+    .form-title {
+
+      text-align: center;
+
+      font-size: 20px;
+
+      font-weight: 700;
+
+      color: #222;
+
+      padding: 13px 10px 3px;
+    }
+
+    .form-subtitle {
+
+      text-align: center;
+
+      font-size: 12px;
+
+      color: #777;
+
+      padding-bottom: 12px;
+    }
+
+
+    /* ==================================================
+       FORM HEADER
+       ================================================== */
+
+    .form-header {
+
+      padding: 0 12px 12px;
+    }
+
+    .header-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 8px 16px;
+    }
+
+    .field-row {
+
+      display: grid;
+
+      grid-template-columns:
+        115px 1fr;
+
+      align-items: center;
+
+      min-height: 37px;
+    }
+
+    .field-label {
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      color: #303840;
+    }
+
+    .field-input {
+
+      width: 100%;
+
+      height: 34px;
+
+      border: 1px solid #cfd4d8;
+
+      border-radius: 4px;
+
+      padding: 0 9px;
+
+      font-size: 13px;
+
+      outline: none;
+
+      background: #fff;
+    }
+
+    .field-input:focus {
+
+      border-color: #788894;
+
+      box-shadow:
+        0 0 0 2px
+        rgba(90,110,125,.08);
+    }
+
+    .field-input[readonly] {
+
+      background: #f5f6f7;
+
+      color: #555;
+    }
+
+    .indent-field {
+
+      display: flex;
+
+      gap: 5px;
+    }
+
+    .indent-field input {
+      flex: 1;
+    }
+
+    .small-refresh {
+
+      width: 35px;
+
+      height: 34px;
+
+      border: 1px solid #cfd4d8;
+
+      border-radius: 4px;
+
+      background: #f7f7f7;
+
+      cursor: pointer;
+
+      font-size: 17px;
+    }
+
+    .small-refresh:hover {
+      background: #e8ecef;
+    }
+
+
+    /* ==================================================
+       MATERIAL TABLE
+       ================================================== */
+
+    .table-wrap {
+      width: 100%;
+      height: 430px;
+      max-height: 430px;
+      overflow: auto;
+      padding: 0 12px 10px;
+      box-sizing: border-box;
+      overscroll-behavior: contain;
+    }
+
+    .material-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+
+    .material-row-actions {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px 10px;
+    }
+
+    .add-material-row-btn {
+      border: 0;
+      border-radius: 5px;
+      padding: 8px 14px;
+      background: #16804a;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .add-material-row-btn:hover { background: #11683c; }
+
+    .material-row-count {
+      color: #586575;
+      font-size: 12px;
+    }
+
+    .material-table {
+
+      width: 100%;
+
+      border-collapse: collapse;
+
+      table-layout: fixed;
+
+      min-width: 850px;
+    }
+
+    .material-table th {
+
+      background: #dfe4e8;
+
+      border: 1px solid #aeb6bd;
+
+      padding: 7px 5px;
+
+      text-align: center;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      color: #26313a;
+    }
+
+    .material-table td {
+
+      border: 1px solid #c6ccd1;
+
+      padding: 3px;
+
+      height: 40px;
+
+      font-size: 12px;
+
+      background: #fff;
+    }
+
+    .material-table .sl {
+
+      width: 42px;
+
+      text-align: center;
+
+      font-weight: 600;
+    }
+
+    .material-table .material-col {
+      width: 37%;
+    }
+
+    .material-table .unit-col {
+      width: 9%;
+    }
+
+    .material-table .qty-col {
+      width: 11%;
+    }
+
+    .material-table .stock-col {
+      width: 11%;
+    }
+
+    .material-table .actual-col {
+      width: 12%;
+    }
+
+    .material-table .remarks-col {
+      width: 10%;
+    }
+
+    .material-input {
+
+      width: 100%;
+
+      height: 31px;
+
+      border: 1px solid #d1d5d8;
+
+      border-radius: 3px;
+
+      padding: 0 7px;
+
+      font-size: 12px;
+
+      outline: none;
+    }
+
+    .material-input:focus {
+
+      border-color: #758591;
+
+      box-shadow:
+        0 0 0 2px
+        rgba(80,100,115,.08);
+    }
+
+    .actual-input {
+
+      background: #f2f4f5;
+
+      text-align: center;
+
+      font-weight: 700;
+
+      color: #222;
+
+      cursor: default;
+    }
+
+    .number-input {
+      text-align: center;
+    }
+
+    .sl-number {
+      text-align: center;
+      font-weight: 600;
+    }
+
+
+    /* ==================================================
+       TOTAL
+       ================================================== */
+
+    .total-row {
+
+      display: flex;
+
+      justify-content: flex-end;
+
+      gap: 10px;
+
+      padding: 5px 12px 12px;
+    }
+
+    .total-box {
+
+      min-width: 190px;
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 75px;
+
+      border: 1px solid #c7cdd1;
+
+      border-radius: 4px;
+
+      overflow: hidden;
+
+      font-size: 12px;
+
+      font-weight: 700;
+    }
+
+    .total-box span {
+
+      padding: 7px;
+
+      background: #e9edf0;
+    }
+
+    .total-box strong {
+
+      padding: 7px;
+
+      text-align: center;
+
+      background: #fff;
+    }
+
+
+    /* ==================================================
+       FORM BUTTONS
+       ================================================== */
+
+    .bottom-actions {
+
+      display: flex;
+
+      gap: 8px;
+
+      padding: 0 12px 14px;
+    }
+
+    .action-btn {
+
+      border: none;
+
+      border-radius: 4px;
+
+      height: 38px;
+
+      padding: 0 17px;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .submit-btn {
+
+      background: #253746;
+
+      color: #fff;
+    }
+
+    .submit-btn:hover {
+      background: #172631;
+    }
+
+    .clear-btn {
+
+      background: #e9ecef;
+
+      color: #333;
+
+      border: 1px solid #ccd2d6;
+    }
+
+    .clear-btn:hover {
+      background: #dce1e4;
+    }
+
+    .search-btn {
+
+      background: #e4edf4;
+
+      color: #263746;
+
+      border: 1px solid #c6d4df;
+    }
+
+
+    /* ==================================================
+       SIDE PANEL
+       ================================================== */
+
+    .side-panel {
+
+      background: #fff;
+
+      border: 1px solid #d8dde1;
+
+      border-radius: 4px;
+
+      padding: 10px;
+
+      box-shadow:
+        0 1px 4px
+        rgba(0,0,0,.08);
+
+      position: sticky;
+
+      top: 10px;
+    }
+
+    .side-title {
+
+      font-size: 15px;
+
+      font-weight: 700;
+
+      color: #273746;
+
+      margin-bottom: 9px;
+    }
+
+    .side-field {
+
+      margin-bottom: 8px;
+    }
+
+    .side-label {
+
+      display: block;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      color: #4d5962;
+
+      margin-bottom: 4px;
+    }
+
+    .side-input,
+    .side-select {
+
+      width: 100%;
+
+      height: 34px;
+
+      border: 1px solid #cbd1d5;
+
+      border-radius: 4px;
+
+      padding: 0 8px;
+
+      font-size: 12px;
+
+      background: #fff;
+
+      outline: none;
+    }
+
+    .side-input:focus,
+    .side-select:focus {
+
+      border-color: #71818d;
+    }
+
+
+    .side-indent-picker {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .side-indent-picker .side-input {
+      flex: 1;
+    }
+
+    .side-refresh {
+      width: 34px;
+      height: 34px;
+      border: 1px solid #cbd1d5;
+      border-radius: 4px;
+      background: #f7f7f7;
+      color: #34495e;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .side-refresh:hover {
+      background: #e8ecef;
+    }
+
+
+    /* Compact second sidebar for indent actions */
+    #appPage .action-sidebar {
+      padding: 8px !important;
+      min-width: 0;
+    }
+    #appPage .action-sidebar .side-title {
+      font-size: 13px !important;
+      padding: 9px 7px !important;
+      text-align: center;
+      margin-bottom: 9px !important;
+    }
+    #appPage .action-sidebar-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    #appPage .action-sidebar-buttons .action-btn {
+      width: 100%;
+      min-height: 36px;
+      height: auto !important;
+      padding: 8px 5px !important;
+      white-space: normal;
+      line-height: 1.3;
+      font-size: 11px !important;
+      text-align: center;
+    }
+    #appPage .action-sidebar-divider {
+      height: 1px;
+      background: #dce4f1;
+      margin: 12px 0;
+    }
+    #appPage .action-sidebar .store-btn {
+      min-height: 36px !important;
+      font-size: 11px !important;
+      text-align: center;
+      justify-content: center;
+      padding: 6px !important;
+      white-space: normal;
+    }
+    #appPage .action-sidebar .status-box {
+      font-size: 10px !important;
+    }
+
+    /* ==================================================
+       RECIPIENTS
+       ================================================== */
+
+    .recipient-title {
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      margin: 10px 0 5px;
+    }
+
+    .recipient-box {
+
+      border: 1px solid #d6dade;
+
+      border-radius: 4px;
+
+      max-height: 150px;
+
+      overflow-y: auto;
+
+      background: #fafafa;
+    }
+
+    .recipient-empty {
+
+      color: #92999e;
+
+      padding: 11px;
+
+      font-size: 11px;
+
+      text-align: center;
+    }
+
+    .recipient-item {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 6px;
+
+      padding: 7px;
+
+      border-bottom: 1px solid #e4e7e9;
+
+      font-size: 11px;
+    }
+
+    .recipient-item:last-child {
+      border-bottom: none;
+    }
+
+    .recipient-item input {
+      margin: 0;
+    }
+
+    /* Single-recipient email controls stay on one aligned row. */
+    .extra-email-row {
+      display: flex;
+      align-items: stretch;
+      gap: 6px;
+      width: 100%;
+    }
+    .extra-email-row .side-input {
+      flex: 1 1 auto;
+      width: 0;
+      min-width: 0;
+      margin: 0;
+    }
+    .send-single-btn {
+      flex: 0 0 58px;
+      min-width: 58px;
+      height: 34px;
+      border: 0;
+      border-radius: 4px;
+      background: #197447;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 7px;
+      white-space: nowrap;
+    }
+    .send-single-btn:hover { background: #125c37; }
+    .send-single-btn:disabled { opacity: .6; cursor: wait; }
+
+
+    /* ==================================================
+       STORE BUTTONS
+       ================================================== */
+
+    .store-title {
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      margin: 11px 0 5px;
+    }
+
+    .store-btn {
+
+      width: 100%;
+
+      min-height: 40px;
+
+      border: none;
+
+      border-radius: 4px;
+
+      margin-bottom: 6px;
+
+      cursor: pointer;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      text-align: left;
+
+      padding: 0 12px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+    }
+
+    .store-btn:hover {
+      filter: brightness(.97);
+    }
+
+    .chinki {
+
+      background: #d9f4d6;
+
+      color: #26752d;
+    }
+
+    .aldl {
+
+      background: #d8eaff;
+
+      color: #145ca8;
+    }
+
+    .other {
+
+      background: #ffe2c5;
+
+      color: #9a5300;
+    }
+
+    .send {
+
+      background: #d7f3d3;
+
+      color: #208126;
+
+      justify-content: center;
+
+      text-align: center;
+
+      margin-top: 4px;
+    }
+
+    .store-dot {
+
+      width: 13px;
+      height: 13px;
+
+      border-radius: 50%;
+
+      display: inline-block;
+
+      border: 1px solid rgba(0,0,0,.15);
+    }
+
+    .dot-green {
+      background: #18b52b;
+    }
+
+    .dot-blue {
+      background: #1670df;
+    }
+
+    .dot-orange {
+      background: #f17b16;
+    }
+
+
+    /* ==================================================
+       STATUS
+       ================================================== */
+
+    .status-box {
+
+      margin-top: 7px;
+
+      border: 1px solid #d4d9dd;
+
+      background: #fafafa;
+
+      border-radius: 4px;
+
+      padding: 9px;
+
+      min-height: 58px;
+
+      font-size: 11px;
+    }
+
+    .status-title {
+
+      font-weight: 700;
+
+      margin-bottom: 4px;
+    }
+
+    #statusText {
+      color: #58636b;
+      line-height: 1.4;
+    }
+
+
+    /* ==================================================
+       ADMIN PANEL
+       ================================================== */
+
+    .admin-panel {
+
+      display: none;
+
+      margin-top: 10px;
+
+      border-top: 1px solid #ddd;
+
+      padding-top: 10px;
+    }
+
+    .admin-btn {
+
+      width: 100%;
+
+      height: 34px;
+
+      border: 1px solid #cdd3d7;
+
+      border-radius: 4px;
+
+      background: #f1f3f5;
+
+      cursor: pointer;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      margin-bottom: 5px;
+    }
+
+    .admin-btn:hover {
+      background: #e5e8eb;
+    }
+
+
+    /* ==================================================
+       MODAL
+       ================================================== */
+
+    .modal {
+
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      background:
+        rgba(0,0,0,.45);
+
+      z-index: 9999;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 15px;
+    }
+
+    .modal-box {
+
+      width: 100%;
+
+      max-width: 650px;
+
+      max-height: 90vh;
+
+      overflow-y: auto;
+
+      background: #fff;
+
+      border-radius: 8px;
+
+      box-shadow:
+        0 15px 50px
+        rgba(0,0,0,.35);
+
+      padding: 18px;
+    }
+
+    .modal-header {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+
+      font-size: 17px;
+
+      font-weight: 700;
+    }
+
+    .close-btn {
+
+      border: none;
+
+      background: none;
+
+      font-size: 24px;
+
+      cursor: pointer;
+
+      color: #666;
+    }
+
+    .modal-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 10px;
+    }
+
+    .modal-input {
+
+      width: 100%;
+
+      height: 36px;
+
+      border: 1px solid #ccd2d6;
+
+      border-radius: 4px;
+
+      padding: 0 8px;
+
+      font-size: 12px;
+    }
+
+    .modal-full {
+      grid-column: 1 / -1;
+    }
+
+    .modal-action {
+
+      margin-top: 12px;
+
+      width: 100%;
+
+      height: 38px;
+
+      border: none;
+
+      border-radius: 4px;
+
+      background: #263746;
+
+      color: #fff;
+
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .users-table {
+
+      width: 100%;
+
+      border-collapse: collapse;
+
+      margin-top: 15px;
+
+      font-size: 11px;
+    }
+
+    .users-table th,
+    .users-table td {
+
+      border: 1px solid #d5dadd;
+
+      padding: 6px;
+
+      text-align: left;
+    }
+
+    .users-table th {
+
+      background: #e9edf0;
+    }
+
+    .mini-btn {
+
+      border: none;
+
+      padding: 5px 7px;
+
+      border-radius: 3px;
+
+      cursor: pointer;
+
+      font-size: 10px;
+    }
+
+    .delete-user {
+      background: #ffdede;
+      color: #a00000;
+    }
+
+    .reset-user {
+      background: #e5eef8;
+      color: #235a86;
+    }
+
+
+    /* ==================================================
+       LOADING
+       ================================================== */
+
+    #loading {
+
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      background:
+        rgba(255,255,255,.72);
+
+      z-index: 10000;
+
+      align-items: center;
+
+      justify-content: center;
+    }
+
+    .loading-box {
+
+      background: #fff;
+
+      border-radius: 8px;
+
+      padding: 20px 28px;
+
+      box-shadow:
+        0 5px 25px
+        rgba(0,0,0,.20);
+
+      text-align: center;
+
+      font-size: 13px;
+
+      font-weight: 700;
+    }
+
+    .spinner {
+
+      width: 28px;
+
+      height: 28px;
+
+      border: 3px solid #ddd;
+
+      border-top-color: #263746;
+
+      border-radius: 50%;
+
+      animation:
+        spin .8s linear infinite;
+
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+
+      to {
+        transform: rotate(360deg);
+      }
+
+    }
+
+
+    /* ==================================================
+       RESPONSIVE
+       ================================================== */
+
+    @media (max-width: 1150px) {
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-areas:
+          "form"
+          "actions"
+          "email";
+      }
+      #appPage .main-grid > .form-card,
+      #appPage .main-grid > .action-sidebar,
+      #appPage .main-grid > .side-panel:not(.action-sidebar) {
+        grid-column: 1 !important;
+        position: static !important;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 700px) {
+
+      .header-grid {
+
+        grid-template-columns: 1fr;
+      }
+
+      .field-row {
+
+        grid-template-columns:
+          105px 1fr;
+      }
+
+      .top-header {
+
+        padding: 0 10px;
+      }
+
+      .brand {
+        font-size: 15px;
+      }
+
+      .user-area {
+        font-size: 11px;
+      }
+
+      .modal-grid {
+
+        grid-template-columns: 1fr;
+      }
+
+      .modal-full {
+        grid-column: auto;
+      }
+
+    }
+
+  
+/* =========================================================
+   DASHBOARD COLOR REFRESH — VISUAL ONLY
+   Keeps the existing HTML structure, sizing and behaviour.
+   Scoped to the main application; login page is unchanged.
+   ========================================================= */
+#appPage {
+  background: linear-gradient(135deg, #f2f7ff 0%, #f7f4ff 48%, #eefbf7 100%) !important;
+  color: #243247;
+}
+#appPage .top-header {
+  background: linear-gradient(100deg, #123b66 0%, #3159a5 52%, #6848a8 100%) !important;
+  box-shadow: 0 4px 16px rgba(36, 61, 112, .22) !important;
+}
+#appPage .role-badge {
+  background: rgba(255,255,255,.18) !important;
+  border: 1px solid rgba(255,255,255,.25);
+}
+#appPage .main-wrapper { background: transparent !important; }
+#appPage .form-card {
+  background: #ffffff !important;
+  border: 1px solid #d8e4f5 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(45, 76, 130, .10) !important;
+}
+#appPage .form-title {
+  color: #173f76 !important;
+  background: linear-gradient(90deg, #e8f2ff, #f0eaff, #e7fbf5) !important;
+  border-bottom: 1px solid #dbe7f7;
+}
+#appPage .form-subtitle {
+  background: #f5f8ff !important;
+  color: #65758d !important;
+}
+#appPage .form-header {
+  background: linear-gradient(115deg, #f0f7ff, #f8f4ff) !important;
+  border-bottom: 1px solid #dce7f6;
+}
+#appPage .header-grid .field-row:nth-child(1) { background: #eaf6ff; }
+#appPage .header-grid .field-row:nth-child(2) { background: #fff1e8; }
+#appPage .header-grid .field-row:nth-child(3) { background: #f1edff; }
+#appPage .header-grid .field-row:nth-child(4) { background: #e8fbf4; }
+#appPage .header-grid .field-row:nth-child(5) { background: #fff8df; }
+#appPage .header-grid .field-row {
+  border: 1px solid #dce6f2;
+  border-radius: 7px;
+  padding: 4px 7px;
+}
+#appPage .field-label { color: #334b6b !important; }
+#appPage .field-input {
+  border-color: #c7d6e9 !important;
+  border-radius: 6px !important;
+  background: rgba(255,255,255,.94) !important;
+}
+#appPage .field-input:focus,
+#appPage .material-input:focus,
+#appPage .side-input:focus,
+#appPage .side-select:focus {
+  border-color: #477de0 !important;
+  box-shadow: 0 0 0 3px rgba(71,125,224,.14) !important;
+}
+#appPage .small-refresh,
+#appPage .side-refresh {
+  background: #e7efff !important;
+  color: #2458a6 !important;
+  border-color: #c4d5f4 !important;
+}
+#appPage .table-wrap { background: #fbfdff !important; }
+#appPage .material-table th {
+  color: #fff !important;
+  border-color: #fff !important;
+}
+#appPage .material-table th:nth-child(1) { background: #53657d !important; }
+#appPage .material-table th:nth-child(2) { background: #2869a8 !important; }
+#appPage .material-table th:nth-child(3) { background: #168b87 !important; }
+#appPage .material-table th:nth-child(4) { background: #7b55b5 !important; }
+#appPage .material-table th:nth-child(5) { background: #d17a24 !important; }
+#appPage .material-table th:nth-child(6) { background: #21845a !important; }
+#appPage .material-table th:nth-child(7) { background: #b64d75 !important; }
+#appPage .material-table td {
+  border-color: #d8e2ef !important;
+  background: #fff !important;
+}
+#appPage .material-table tbody tr:nth-child(even) td { background: #f3f7ff !important; }
+#appPage .material-table tbody tr:hover td { background: #e9f5ff !important; }
+#appPage .material-table .actual-input {
+  background: #e6f8ee !important;
+  color: #176541 !important;
+  border-color: #b8e6cb !important;
+}
+#appPage .total-box {
+  border: 1px solid #9ac9bd !important;
+  border-radius: 8px !important;
+  box-shadow: 0 3px 10px rgba(29, 125, 92, .10);
+}
+#appPage .total-box span {
+  background: linear-gradient(100deg, #d9f6e9, #dff2ff) !important;
+  color: #17634f !important;
+}
+#appPage .total-box strong {
+  background: #f0fff7 !important;
+  color: #14744d !important;
+}
+#appPage .submit-btn {
+  background: linear-gradient(110deg, #16784f, #20a16a) !important;
+  box-shadow: 0 3px 8px rgba(22,120,79,.18);
+}
+#appPage .submit-btn:hover { filter: brightness(.94); }
+#appPage .clear-btn {
+  background: #fff0f0 !important;
+  color: #a33342 !important;
+  border: 1px solid #f0c8ce !important;
+}
+#appPage .search-btn {
+  background: #eaf2ff !important;
+  color: #2458a6 !important;
+  border: 1px solid #c9daf8 !important;
+}
+#appPage .action-btn { border-radius: 7px !important; }
+#appPage #recentIndentsPanel {
+  background: linear-gradient(110deg, #f0f8ff, #f8f1ff) !important;
+  border: 1px solid #d6d8f5 !important;
+  border-left: 5px solid #7664c5 !important;
+  border-radius: 9px !important;
+  box-shadow: 0 4px 12px rgba(81, 79, 150, .08) !important;
+}
+#appPage #recentIndentsPanel > div:first-child { color: #51418e !important; }
+#appPage #recentIndentsList { color: #485b7b !important; }
+#appPage #recentIndentsList > * {
+  background: #fff !important;
+  border: 1px solid #d6e1f4 !important;
+  border-radius: 6px !important;
+  padding: 5px 8px !important;
+}
+#appPage .side-panel {
+  background: linear-gradient(180deg, #ffffff, #f5f8ff) !important;
+  border: 1px solid #d2def2 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 22px rgba(45, 76, 130, .11) !important;
+}
+#appPage .side-title {
+  color: #fff !important;
+  background: linear-gradient(100deg, #245b9b, #6a54b5) !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+  margin: -1px -1px 12px !important;
+  box-shadow: 0 3px 8px rgba(65, 73, 145, .16);
+}
+#appPage .side-field {
+  background: #edf5ff !important;
+  border: 1px solid #d6e6fa !important;
+  border-radius: 7px !important;
+  padding: 7px !important;
+}
+#appPage .side-label { color: #315b86 !important; }
+#appPage .side-input,
+#appPage .side-select {
+  background: #fff !important;
+  border-color: #c8d8ed !important;
+  border-radius: 6px !important;
+}
+#appPage .recipient-title {
+  color: #624a9c !important;
+  background: #f1ecff !important;
+  border-left: 3px solid #8b72d6 !important;
+  border-radius: 4px !important;
+  padding: 5px 7px !important;
+}
+#appPage #engineerSignaturePreview,
+#appPage #inventorySignaturePreview {
+  background: #f0fbf7 !important;
+  border-color: #bfe5d6 !important;
+}
+#appPage .store-title {
+  color: #fff !important;
+  background: linear-gradient(90deg, #247c70, #3c9c83) !important;
+  border-radius: 5px !important;
+  padding: 7px 9px !important;
+}
+#appPage .store-btn { border-radius: 7px !important; box-shadow: 0 2px 5px rgba(30,50,70,.06); }
+#appPage .chinki { background: #dff8e7 !important; color: #176b38 !important; border: 1px solid #b8e8c8; }
+#appPage .aldl { background: #e1efff !important; color: #1c5796 !important; border: 1px solid #bdd7fa; }
+#appPage .other { background: #fff0dc !important; color: #98500b !important; border: 1px solid #f2d2a5; }
+#appPage .send {
+  background: linear-gradient(100deg, #16784f, #23a36a) !important;
+  color: #fff !important;
+  box-shadow: 0 3px 8px rgba(22,120,79,.16);
+}
+#appPage .send-single-btn {
+  background: linear-gradient(100deg, #147b54, #22a875) !important;
+  border-radius: 6px !important;
+}
+#appPage .status-box {
+  background: #fff8e8 !important;
+  border: 1px solid #f0d9a2 !important;
+  border-left: 4px solid #e2a52b !important;
+  border-radius: 7px !important;
+}
+#appPage .status-title { color: #8c5c0b !important; }
+#appPage #statusText { color: #6f5a34 !important; }
+#appPage .admin-panel {
+  background: #f1f5ff !important;
+  border: 1px solid #d7e2fa !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+}
+#appPage .admin-btn {
+  background: #e6edff !important;
+  border-color: #c5d4f5 !important;
+  color: #294f91 !important;
+  border-radius: 6px !important;
+}
+#appPage .admin-btn:hover { background: #d7e3ff !important; }
+
+  
+/* Custom in-app message dialog: avoids browser URL/origin popups */
+#appMessageOverlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.42);z-index:999999;padding:18px}
+#appMessageBox{width:min(440px,100%);background:#fff;border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.25);overflow:hidden;font-family:Arial,Helvetica,sans-serif}
+#appMessageTitle{padding:16px 20px;background:#5b3c91;color:#fff;font-weight:700;font-size:16px}
+#appMessageText{padding:22px 20px;color:#222;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+#appMessageActions{display:flex;justify-content:flex-end;gap:10px;padding:0 20px 18px}
+#appMessageActions button{border:0;border-radius:7px;padding:10px 18px;cursor:pointer;font-weight:600;font-size:13px}
+#appMessageOk{background:#5b3c91;color:#fff}#appMessageCancel{background:#eef0f4;color:#333}
+
+
+/* Material suggestions: complete imported list in a scrollable panel. */
+#appPage .material-autocomplete { position: relative; width: 100%; }
+#appPage .material-autocomplete > .material-input { width: 100%; }
+#appPage .material-suggestion-list {
+  display: none; position: absolute; top: calc(100% + 2px); left: 0; right: 0;
+  max-height: 260px; overflow-y: auto; background: #fff;
+  border: 1px solid #8ba9d6; border-radius: 7px;
+  box-shadow: 0 8px 22px rgba(31,56,100,.20); z-index: 10000;
+}
+#appPage .material-suggestion-option {
+  display: block; width: 100%; padding: 8px 10px; border: 0;
+  border-bottom: 1px solid #edf1f8; background: #fff; color: #263b59;
+  text-align: left; font-size: 12px; cursor: pointer;
+}
+#appPage .material-suggestion-option:hover,
+#appPage .material-suggestion-option:focus { background: #eaf3ff; color: #174f91; outline: none; }
+#appPage .material-suggestion-empty { padding: 10px; color: #7a8798; font-size: 12px; }
+
+
+
+/* =========================================================
+   PREMIUM DASHBOARD THEME — visual-only enhancement
+   No HTML IDs, JavaScript, form behaviour or business rules changed.
+   ========================================================= */
+#appPage {
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(93,145,255,.17), transparent 34%),
+    radial-gradient(ellipse at 96% 10%, rgba(173,111,255,.15), transparent 30%),
+    linear-gradient(135deg,#edf4ff 0%,#f5f1ff 48%,#eafaf5 100%) !important;
+}
+#appPage .top-header {
+  background: linear-gradient(105deg,#102b50 0%,#174f83 38%,#4c4aa1 75%,#7044a5 100%) !important;
+  border-bottom: 1px solid rgba(255,255,255,.22);
+  box-shadow: 0 7px 24px rgba(22,43,86,.28) !important;
+  position: relative;
+}
+#appPage .top-header:after {
+  content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+  background:linear-gradient(90deg,#39d6c4,#65a8ff,#c18aff,#ff9cbd);
+  pointer-events:none;
+}
+#appPage .brand { letter-spacing:.25px; text-shadow:0 1px 8px rgba(0,0,0,.18); }
+#appPage .main-wrapper { gap:14px; }
+#appPage .form-card {
+  border:1px solid rgba(143,169,215,.58) !important;
+  border-radius:16px !important;
+  box-shadow:0 12px 34px rgba(41,68,119,.13),0 2px 7px rgba(41,68,119,.06) !important;
+  overflow:visible;
+}
+#appPage .form-title {
+  background:linear-gradient(105deg,#dcecff 0%,#e9e5ff 52%,#d9f8ef 100%) !important;
+  color:#173d72 !important;
+  border-radius:15px 15px 0 0;
+  text-shadow:0 1px 0 rgba(255,255,255,.8);
+  padding-top:11px; padding-bottom:8px;
+}
+#appPage .form-subtitle { background:linear-gradient(90deg,#f4f8ff,#faf7ff,#f1fcf8) !important; }
+#appPage .form-header {
+  background:linear-gradient(135deg,#f5f9ff 0%,#fbf8ff 55%,#f1fcf8 100%) !important;
+  border-bottom:1px solid #e0e9f7;
+}
+#appPage .header-grid .field-row {
+  border-radius:10px !important; padding:6px 8px !important;
+  box-shadow:0 2px 7px rgba(44,75,125,.055);
+  transition:transform .16s ease,box-shadow .16s ease;
+}
+#appPage .header-grid .field-row:hover { transform:translateY(-1px); box-shadow:0 5px 12px rgba(44,75,125,.09); }
+#appPage .header-grid .field-row:nth-child(1) { background:linear-gradient(120deg,#e8f4ff,#f4f9ff) !important; border-color:#cfe3fb; }
+#appPage .header-grid .field-row:nth-child(2) { background:linear-gradient(120deg,#fff0e8,#fff8f2) !important; border-color:#f4d9c9; }
+#appPage .header-grid .field-row:nth-child(3) { background:linear-gradient(120deg,#f0ebff,#faf7ff) !important; border-color:#ddd2fa; }
+#appPage .header-grid .field-row:nth-child(4) { background:linear-gradient(120deg,#e4faf3,#f3fffb) !important; border-color:#c6ebdf; }
+#appPage .header-grid .field-row:nth-child(5) { background:linear-gradient(120deg,#fff8df,#fffdf3) !important; border-color:#f2e5b8; }
+#appPage .field-label { font-weight:700 !important; }
+#appPage .field-input,#appPage .side-input,#appPage .side-select {
+  min-height:30px; border:1px solid #c6d5ea !important;
+  box-shadow:inset 0 1px 2px rgba(24,48,85,.035);
+  transition:border-color .15s ease,box-shadow .15s ease,background .15s ease;
+}
+#appPage .field-input:hover,#appPage .side-input:hover,#appPage .side-select:hover { border-color:#91add8 !important; }
+#appPage .table-wrap {
+  border:1px solid #d7e3f3; border-radius:10px;
+  box-shadow:0 4px 13px rgba(43,70,116,.06);
+  overflow:auto;
+}
+#appPage .material-table { border-collapse:separate; border-spacing:0; }
+#appPage .material-table thead th { padding-top:9px; padding-bottom:9px; font-weight:700; letter-spacing:.15px; text-shadow:0 1px 1px rgba(0,0,0,.14); }
+#appPage .material-table th:nth-child(1) { background:linear-gradient(120deg,#465a75,#637993) !important; }
+#appPage .material-table th:nth-child(2) { background:linear-gradient(120deg,#205d9b,#347fbd) !important; }
+#appPage .material-table th:nth-child(3) { background:linear-gradient(120deg,#087c78,#20a49b) !important; }
+#appPage .material-table th:nth-child(4) { background:linear-gradient(120deg,#6844a6,#9568d0) !important; }
+#appPage .material-table th:nth-child(5) { background:linear-gradient(120deg,#bd681b,#e49a35) !important; }
+#appPage .material-table th:nth-child(6) { background:linear-gradient(120deg,#16764f,#2da878) !important; }
+#appPage .material-table th:nth-child(7) { background:linear-gradient(120deg,#a43f69,#d2658c) !important; }
+#appPage .material-table td { padding-top:4px; padding-bottom:4px; }
+#appPage .material-table tbody tr { transition:filter .15s ease; }
+#appPage .material-table tbody tr:hover td { background:#e8f4ff !important; }
+#appPage .material-table .material-input {
+  border:1px solid #cfdaea !important; border-radius:5px !important;
+  background:#fff !important; transition:box-shadow .15s ease,border-color .15s ease;
+}
+#appPage .material-table .material-input:hover { border-color:#91add8 !important; }
+#appPage .material-table .actual-input {
+  background:linear-gradient(110deg,#e4f9ed,#effff7) !important;
+  border:1px solid #a9dfc1 !important; border-radius:5px !important;
+  font-weight:700;
+}
+#appPage .add-material-row-btn {
+  background:linear-gradient(110deg,#08784e,#20a56b) !important;
+  border-radius:8px !important; box-shadow:0 4px 10px rgba(18,128,82,.2);
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+#appPage .add-material-row-btn:hover { transform:translateY(-1px); box-shadow:0 6px 14px rgba(18,128,82,.25); }
+#appPage .total-box { overflow:hidden; border-radius:10px !important; box-shadow:0 5px 14px rgba(24,123,88,.12) !important; }
+#appPage .total-box span { font-weight:700; }
+#appPage .total-box strong { font-size:14px; }
+#appPage .action-btn {
+  min-height:34px; border-radius:9px !important; font-weight:700 !important;
+  box-shadow:0 3px 8px rgba(38,59,99,.09);
+  transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+}
+#appPage .action-btn:hover { transform:translateY(-2px); filter:saturate(1.12); box-shadow:0 6px 13px rgba(38,59,99,.15); }
+#appPage .submit-btn { background:linear-gradient(110deg,#08764d,#20a66c) !important; }
+#appPage .clear-btn { background:linear-gradient(110deg,#fff0f1,#ffe5e8) !important; }
+#appPage .search-btn { background:linear-gradient(110deg,#e7f0ff,#dceaff) !important; }
+#appPage .side-panel {
+  border:1px solid rgba(143,169,215,.62) !important; border-radius:16px !important;
+  background:linear-gradient(160deg,#fff 0%,#f7f8ff 54%,#f0fbf8 100%) !important;
+  box-shadow:0 12px 30px rgba(41,68,119,.14) !important;
+  padding:10px !important;
+}
+#appPage .side-title {
+  background:linear-gradient(105deg,#174d82 0%,#4357a8 55%,#7650b1 100%) !important;
+  border-radius:10px !important; box-shadow:0 5px 12px rgba(61,69,145,.2) !important;
+  letter-spacing:.15px; padding:11px 10px !important;
+}
+#appPage .side-field {
+  background:linear-gradient(120deg,#edf5ff,#f5f2ff) !important;
+  border:1px solid #d9e4f5 !important; border-radius:9px !important;
+  box-shadow:0 2px 7px rgba(49,77,126,.045);
+}
+#appPage .recipient-title {
+  background:linear-gradient(100deg,#f0eaff,#f9efff) !important;
+  border-left:4px solid #8765cf !important; border-radius:6px !important;
+  font-weight:700;
+}
+#appPage .store-title {
+  background:linear-gradient(100deg,#087b70,#27a48d) !important;
+  border-radius:8px !important; box-shadow:0 3px 9px rgba(15,126,105,.16);
+}
+#appPage .store-btn {
+  min-height:34px; border-radius:8px !important; font-weight:700 !important;
+  transition:transform .15s ease,filter .15s ease;
+}
+#appPage .store-btn:hover { transform:translateY(-1px); filter:brightness(.97); }
+#appPage .status-box { box-shadow:0 3px 9px rgba(153,109,26,.07); }
+#appPage #recentIndentsPanel { box-shadow:0 6px 16px rgba(81,79,150,.1) !important; }
+#appPage .material-suggestion-list { border:1px solid #8ca9d4; border-radius:9px; }
+#appPage .material-suggestion-option { padding:9px 11px; }
+@media (max-width:700px) {
+  #appPage .form-card,#appPage .side-panel { border-radius:12px !important; }
+  #appPage .header-grid .field-row { padding:5px 7px !important; }
+}
+
+
+/* Fixed desktop workspace: the dashboard stays in place; only its panels scroll. */
+@media (min-width: 1151px) {
+  html, body { height: 100%; overflow: hidden; }
+  #appPage { height: 100vh !important; min-height: 0 !important; overflow: hidden !important; display: flex; flex-direction: column; }
+  #appPage .top-header { flex: 0 0 58px; position: relative; z-index: 5; }
+  #appPage .main-wrapper { flex: 1 1 auto; min-height: 0; height: calc(100vh - 58px); overflow: hidden; padding: 10px 14px !important; }
+  #appPage .main-grid { height: 100%; min-height: 0; align-items: stretch !important; grid-template-columns: 205px minmax(0, 1fr) 260px !important; grid-template-areas: "actions form email" !important; gap: 12px !important; }
+  #appPage .main-grid > .form-card, #appPage .main-grid > .action-sidebar, #appPage .main-grid > .side-panel:not(.action-sidebar) { height: 100%; max-height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; position: relative !important; top: auto !important; }
+  #appPage .form-card { margin: 0 !important; }
+  #appPage .action-sidebar, #appPage .side-panel:not(.action-sidebar) { scrollbar-width: thin; }
+}
+#appPage .recent-toggle-btn { width:100%; margin-top:8px; background:linear-gradient(110deg,#f0ebff,#e4efff) !important; color:#3d4f91 !important; border:1px solid #d2d9f3 !important; min-height:36px; }
+#appPage .action-sidebar #adminPanel { margin-top:8px !important; padding-top:8px !important; border-top:1px solid #dce4f1; }
+#appPage .action-sidebar #signatureAdmin { max-height:360px; overflow-y:auto; }
+@media (max-width: 1150px) {
+  html, body { height:auto; overflow:auto; }
+  #appPage { height:auto !important; min-height:100vh !important; overflow:visible !important; display:block !important; }
+  #appPage .main-wrapper { height:auto !important; overflow:visible !important; }
+  #appPage .main-grid { height:auto !important; }
+  #appPage .main-grid > .form-card, #appPage .main-grid > .action-sidebar, #appPage .main-grid > .side-panel:not(.action-sidebar) { height:auto; max-height:none; overflow:visible; }
+}
+
+</style>
+
+</head>
+
+
+<body style="margin: 0; padding: 0; width: 100%; min-height: 100vh;">
+
+
+<!-- =====================================================
+     LOGIN PAGE
+     ===================================================== -->
+
+<div id="loginPage" style="min-height: 100vh; padding: 20px;">
+
+  <div class="login-box" style="width: 100%; max-width: 410px; border-radius: 12px; padding: 32px;">
+
+    <div class="login-logo" style="width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 12px; font-size: 23px;">
+      MAX
+    </div>
+
+    <div class="login-title" style="font-size: 23px; margin-bottom: 5px;">
+      MPDP Material Indent
+    </div>
+
+    <div class="login-subtitle" style="font-size: 13px; margin-bottom: 25px;">
+      Material Indent Management System
+    </div>
+
+    <div id="loginError" class="login-error" style="padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+    </div>
+
+    <label class="login-label" style="font-size: 13px; margin-bottom: 6px;">
+      Email
+    </label>
+
+    <input id="loginEmail" class="login-input" type="email" placeholder="Enter email" autocomplete="username" style="width: 100%; height: 45px; border-radius: 6px; padding: 0 12px; margin-bottom: 15px; font-size: 14px;">
+
+    <label class="login-label" style="font-size: 13px; margin-bottom: 6px;">
+      Password
+    </label>
+
+    <input id="loginPassword" class="login-input" type="password" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter') loginUser()" style="width: 100%; height: 45px; border-radius: 6px; padding: 0 12px; margin-bottom: 15px; font-size: 14px;">
+
+    <button class="login-button" onclick="loginUser()" style="width: 100%; height: 46px; border-radius: 6px; font-size: 14px;">
+      LOGIN
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MAIN APP
+     ===================================================== -->
+
+<div id="appPage" style="min-height: 100vh;">
+
+
+  <!-- HEADER -->
+
+  <div class="top-header" style="height: 58px;">
+
+    <div class="brand">
+      MPDP Material Indent
+    </div>
+
+    <div class="user-area" style="gap: 12px;">
+
+      <span id="loggedUserName" class="user-name">
+      </span>
+
+      <span id="loggedUserRole" class="role-badge" style="border-radius: 20px; padding: 5px 10px; font-size: 11px;">
+      </span>
+
+      <button class="logout-btn" onclick="logoutUser()" style="font-size: 13px; padding: 6px 4px;">
+        Logout
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- MAIN -->
+
+  <div class="main-wrapper" style="width: 100%; max-width: 1500px; margin: 0 auto; padding: 14px;">
+
+    <div class="main-grid" style="gap: 14px;">
+
+
+      <!-- =================================================
+           LEFT FORM
+           ================================================= -->
+
+      <div class="form-card" style="border-radius: 4px;">
+
+
+        <div class="form-title" style="font-size: 20px; padding: 13px 10px 3px;">
+          Material Indent
+        </div>
+
+        <div class="form-subtitle" style="font-size: 12px; padding-bottom: 12px;">
+          Site Material Request Form of MPDP
+        </div>
+
+
+        <!-- FORM HEADER -->
+
+        <div class="form-header" style="padding: 0 12px 12px;">
+
+          <div class="header-grid" style="gap: 8px 16px;">
+
+
+            <!-- DATE -->
+
+            <div class="field-row" style="min-height: 37px;">
+
+              <div class="field-label" style="font-size: 13px;">
+                Date
+              </div>
+
+              <input id="date" class="field-input" type="date" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 9px; font-size: 13px;">
+
+            </div>
+
+
+            <!-- EQUIPMENT -->
+
+            <div class="field-row" style="min-height: 37px;">
+
+              <div class="field-label" style="font-size: 13px;">
+                Equipment Code
+              </div>
+
+              <input id="equipment" class="field-input" type="text" list="equipmentSuggestions" autocomplete="off" placeholder="e.g. AC-948" oninput="applyLastUnitsForEquipment()" onchange="applyLastUnitsForEquipment()" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 9px; font-size: 13px;">
+              <datalist id="equipmentSuggestions"></datalist>
+
+            </div>
+
+
+            <!-- INDENT -->
+
+            <div class="field-row" style="min-height: 37px;">
+
+              <div class="field-label" style="font-size: 13px;">
+                Indent Number
+              </div>
+
+              <div class="indent-field" style="gap: 5px;">
+
+                <input id="indentNumber" class="field-input" type="text" list="indentOptions" autocomplete="off" onchange="loadSelectedIndent(this.value)" oninput="syncIndentInputs(this.value)" onkeydown="if(event.key==='Enter') loadSelectedIndent(this.value)" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 9px; font-size: 13px;">
+
+                <button class="small-refresh" onclick="generateNextIndent()" title="Generate next indent" style="width: 35px; height: 34px; border-radius: 4px; font-size: 17px;">
+                  ↻
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <!-- PRESENT HOUR -->
+
+            <div class="field-row" style="min-height: 37px;">
+
+              <div class="field-label" style="font-size: 13px;">
+                Present Hour
+              </div>
+
+              <input id="presentHour" class="field-input" type="text" placeholder="Present Hour" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 9px; font-size: 13px;">
+
+            </div>
+
+
+            <!-- PROJECT -->
+
+            <div class="field-row" style="min-height: 37px;">
+
+              <div class="field-label" style="font-size: 13px;">
+                Project
+              </div>
+
+              <input id="project" class="field-input" type="text" value="MPDP" readonly style="width: 100%; height: 34px; border-radius: 4px; padding: 0 9px; font-size: 13px;">
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- MATERIAL TABLE -->
+
+        <div class="table-wrap" style="width: 100%; padding: 0 12px 10px;">
+
+          <table class="material-table" style="width: 100%; min-width: 850px;">
+
+            <thead>
+
+              <tr>
+
+                <th class="sl" style="padding: 7px 5px; font-size: 12px; width: 42px;">
+                  SL
+                </th>
+
+                <th class="material-col" style="padding: 7px 5px; font-size: 12px; width: 37%;">
+                  Material Description
+                </th>
+
+                <th class="unit-col" style="padding: 7px 5px; font-size: 12px; width: 9%;">
+                  Unit
+                </th>
+
+                <th class="qty-col" style="padding: 7px 5px; font-size: 12px; width: 11%;">
+                  Require Qty
+                </th>
+
+                <th class="stock-col" style="padding: 7px 5px; font-size: 12px; width: 11%;">
+                  Present Stock
+                </th>
+
+                <th class="actual-col" style="padding: 7px 5px; font-size: 12px; width: 12%;">
+                  Actual Requirement
+                </th>
+
+                <th class="remarks-col" style="padding: 7px 5px; font-size: 12px; width: 10%;">
+                  Remarks
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="materialBody">
+            </tbody>
+
+          </table>
+          <datalist id="materialSuggestions"></datalist>
+
+        </div>
+
+        <div class="material-row-actions">
+          <button type="button" class="add-material-row-btn" onclick="addMaterialRow()">+ Add Row</button>
+          <span id="materialRowCount" class="material-row-count">10 rows</span>
+        </div>
+
+
+        <span id="totalActual" style="display:none">0</span>
+
+      </div>
+
+
+
+      <!-- =================================================
+           NEW ACTION SIDEBAR
+           ================================================= -->
+      <div class="side-panel action-sidebar">
+        <div class="side-title">⚙ Indent Actions</div>
+        <div class="action-sidebar-buttons">
+          <button class="action-btn submit-btn" onclick="submitIndent()">💾 Save / Submit Indent</button>
+          <button class="action-btn clear-btn" onclick="clearForm()">🧹 Clear</button>
+          <button class="action-btn search-btn" onclick="searchIndent()">🔍 Search Indent</button>
+          <button class="action-btn search-btn" onclick="copyIndentToClipboard()">📋 Copy to Clipboard</button>
+          <button class="action-btn clear-btn" onclick="downloadIndent()">⬇ Download Indent</button>
+        </div>
+        <div class="action-sidebar-divider"></div>
+        <!-- PRINT -->
+
+        <button class="store-btn" onclick="printIndent()" style="width: 100%; min-height: 40px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; padding: 0 12px; gap: 8px; background: #444; color: #fff;">
+
+          🖨 Print Indent
+
+        </button>
+
+
+        <!-- SEND -->
+
+        <button class="store-btn send" onclick="sendNow()" style="width: 100%; min-height: 40px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; padding: 0 12px; gap: 8px; margin-top: 4px;">
+
+          ✈ Send Now
+
+        </button>
+
+
+
+
+        <!-- STATUS -->
+
+        <div class="status-box" style="margin-top: 7px; border-radius: 4px; padding: 9px; min-height: 58px; font-size: 11px;">
+
+          <div class="status-title" style="margin-bottom: 4px;">
+            Status:
+          </div>
+
+          <div id="statusText" style="line-height: 1.4;">
+            Ready.
+          </div>
+
+        </div>
+
+        <button type="button" class="action-btn recent-toggle-btn" onclick="toggleRecentIndents()" aria-expanded="false" aria-controls="recentIndentsPanel">🕘 সর্বশেষ ১০টি Indent</button>
+        <div id="recentIndentsPanel" style="display:none;margin:8px 0 10px;padding:10px 12px;background:#fff;border:1px solid #d8dee8;border-radius:5px;color:#222;box-shadow:0 1px 3px rgba(0,0,0,.05)">
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px">🕘 সর্বশেষ ১০টি Indent</div>
+          <div id="recentIndentsList" style="display:flex;flex-wrap:wrap;gap:7px;font-size:12px;line-height:1.5;color:#555;max-height:260px;overflow-y:auto">Loading recent indents...</div>
+        </div>
+
+        <div class="action-sidebar-divider"></div>
+                <div id="adminPanel" class="admin-panel" style="margin-top: 10px; padding-top: 10px;">
+
+          <button class="admin-btn" onclick="openUserManagement()" style="width: 100%; height: 34px; border-radius: 4px; font-size: 11px; margin-bottom: 5px;">
+            👥 User Management
+          </button>
+
+          <button class="admin-btn" onclick="openPasswordModal()" style="width: 100%; height: 34px; border-radius: 4px; font-size: 11px; margin-bottom: 5px;">
+            🔐 Change Password
+          </button>
+          <button class="admin-btn" onclick="toggleSignatureAdmin()" style="width: 100%; height: 34px; border-radius: 4px; font-size: 11px; margin-bottom: 5px;">✍️ Engineer &amp; Signature Setup</button>
+          <div id="signatureAdmin" style="display:none;margin-top:10px;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px;color:#222">
+            <div style="font-weight:700;margin-bottom:8px">Engineer names (7)</div>
+            <div id="engineerNameInputs"></div>
+            <button class="admin-btn" style="width: 100%; height: 34px; border-radius: 4px; font-size: 11px; margin-bottom: 5px; margin: 6px 0;" onclick="saveEngineerNames()">Save Engineer Names</button>
+            <hr>
+            <div style="font-weight:700;margin:8px 0">Inventory Person names (4)</div>
+            <div id="inventoryNameInputs"></div>
+            <button class="admin-btn" style="width:100%;height:34px;border-radius:4px;font-size:11px;margin:6px 0" onclick="saveInventoryNames()">Save Inventory Person Names</button>
+            <hr>
+            <div style="font-weight:700;margin:8px 0">Upload Signature Image (saved in Google Sheet)</div>
+            <select id="signatureSlot" class="side-select" onchange="toggleUploadEngineerSelect()" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+              <option value="prepareEngineer">Prepare By Engineer — selected engineer's signature</option>
+              <option value="inventoryPrepare1">Prepare By Inventory Team — Fixed Signature 1</option>
+              <option value="inventoryPrepare2">Prepare By Inventory Team — Fixed Signature 2</option>
+              <option value="inventoryPrepare3">Prepare By Inventory Team — Fixed Signature 3</option>
+              <option value="inventoryPrepare4">Prepare By Inventory Team — Fixed Signature 4</option>
+            </select>
+            <div id="uploadEngineerWrap" style="margin-top:7px">
+              <label for="uploadEngineerSelect" style="display:block;font-size:12px;font-weight:700;margin-bottom:4px">Signature belongs to engineer</label>
+              <select id="uploadEngineerSelect" class="side-select" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px;"></select>
+            </div>
+            <input id="signatureFile" type="file" accept="image/png,image/jpeg,image/webp" style="display:block;width:100%;margin:8px 0">
+            <button class="admin-btn" onclick="uploadSignatureImage()" style="width: 100%; height: 34px; border-radius: 4px; font-size: 11px; margin-bottom: 5px;">Upload Signature</button>
+            <div style="font-size:12px;margin-top:6px">PNG/JPG/WEBP। Prepare By Engineer নির্বাচন করে নির্দিষ্ট Engineer নির্বাচন করলে তাঁর সই আলাদা কলামে সংরক্ষণ হবে। Inventory Team-এর সই একবার আপলোড করলে সব indent-এ স্থায়ীভাবে যুক্ত হবে।</div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           RIGHT SIDE PANEL
+           EMAIL AUTOMATION
+           ================================================= -->
+
+      <div class="side-panel" style="border-radius: 4px; padding: 10px;">
+
+
+        <div class="side-title" style="font-size: 15px; margin-bottom: 9px;">
+          ✉ Indent Email Automation
+        </div>
+
+
+        <!-- CURRENT INDENT -->
+
+        <div class="side-field" style="margin-bottom: 8px;">
+
+          <label class="side-label" style="font-size: 11px; margin-bottom: 4px;">
+            Current / Saved Indent
+          </label>
+
+          <div class="side-indent-picker" style="gap: 5px;">
+            <input id="sideIndent" class="side-input" type="text" list="indentOptions" autocomplete="off" onchange="loadSelectedIndent(this.value)" onkeydown="if(event.key==='Enter') loadSelectedIndent(this.value)" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+            <button type="button" class="side-refresh" onclick="reloadSelectedIndent()" title="Reload selected indent" style="width: 34px; height: 34px; border-radius: 4px; font-size: 16px; line-height: 1;">
+              ↻
+            </button>
+          </div>
+
+          <datalist id="indentOptions"></datalist>
+
+        </div>
+
+
+        <!-- PROJECT -->
+
+        <div class="side-field" style="margin-bottom: 8px;">
+
+          <label class="side-label" style="font-size: 11px; margin-bottom: 4px;">
+            Project
+          </label>
+
+          <input class="side-input" type="text" value="MPDP" readonly style="width: 100%; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+        </div>
+
+
+
+        <!-- SINGLE EXTRA EMAIL + ENGINEER SIGNATURE -->
+        <div class="recipient-title" style="font-size: 12px; margin: 10px 0 5px;">Additional Email Address</div>
+        <div class="extra-email-row" style="gap: 6px; width: 100%;">
+          <input id="customRecipientEmail" class="side-input" type="email" placeholder="name@example.com" autocomplete="email" style="width: 0; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px; min-width: 0; margin: 0;">
+          <button id="sendSingleEmailBtn" class="send-single-btn" type="button" onclick="sendToSingleEmail()" title="শুধু এই ইমেইল ঠিকানায় পাঠান" style="min-width: 58px; height: 34px; border-radius: 4px; font-size: 12px; padding: 0 7px;">Send</button>
+        </div>
+        <div class="recipient-title" style="font-size: 12px; margin: 10px 0 5px; margin-top: 12px;">Prepare By Engineer</div>
+        <select id="engineerSelect" class="side-select" onchange="renderEngineerSignaturePreview()" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+          <option value="engineer1">Loading engineers...</option>
+        </select>
+        <div id="engineerSignaturePreview" style="display:none;margin-top:5px;padding:5px;background:#fff;border:1px solid #ddd;border-radius:4px;text-align:center"><img id="engineerSignaturePreviewImage" alt="Selected engineer signature" style="max-width:180px;max-height:55px;object-fit:contain"><div id="engineerSignaturePreviewName" style="font-size:11px;color:#555"></div></div>
+        <div class="recipient-title" style="font-size: 12px; margin: 10px 0 5px;">Prepare By Inventory Team — Fixed Signature</div>
+        <select id="inventorySignatureSelect" class="side-select" onchange="renderInventorySignaturePreview()" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+          <option value="inventoryPrepare1">Loading inventory people...</option>
+        </select>
+        <div id="inventorySignaturePreview" style="display:none;margin-top:5px;padding:5px;background:#fff;border:1px solid #ddd;border-radius:4px;text-align:center"><img id="inventorySignaturePreviewImage" alt="Selected inventory signature" style="max-width:180px;max-height:55px;object-fit:contain"><div id="inventorySignaturePreviewName" style="font-size:11px;color:#555"></div></div>
+
+
+
+        <!-- STORE -->
+
+        <div class="store-title" style="font-size: 12px; margin: 11px 0 5px;">
+          Store
+        </div>
+
+        <select id="warehouse" class="side-select" style="width: 100%; height: 34px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+          <option value="CHINKI STORE">Chinki Store</option>
+          <option value="ALDL STORE">ALDL Store</option>
+          <option value="EEWP STORE">EEWP Store</option>
+          <option value="DS-1/2 STORE">DS-1/2 Store</option>
+          <option value="DS-12 STORE">DS-12 Store</option>
+          <option value="RNPP STORE">RNPP Store</option>
+          <option value="WE CARE STORE">We Care Store</option>
+          <option value="SILO/WASA STORE">Silo/WASA Store</option>
+          <option value="STORE-9">Store-9</option>
+          <option value="STORE-10">Store-10</option>
+        </select>
+
+        <button class="store-btn" type="button" onclick="createDraft(document.getElementById('warehouse').value)" style="width: 100%; min-height: 40px; border-radius: 4px; margin: 8px 0 6px; font-size: 12px; padding: 0 12px; gap: 8px; background: #ff0000; color: #ffffff; text-align: center;">
+          Create Gmail Draft for Selected Store
+        </button>
+
+
+
+        <!-- ADMIN -->
+
+
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     USER MANAGEMENT MODAL
+     ===================================================== -->
+
+<div id="userModal" class="modal" style="padding: 15px;">
+
+  <div class="modal-box" style="width: 100%; max-width: 650px; max-height: 90vh; border-radius: 8px; padding: 18px;">
+
+    <div class="modal-header" style="margin-bottom: 14px;">
+
+      <div class="modal-title" style="font-size: 17px;">
+        User Management
+      </div>
+
+      <button class="close-btn" onclick="closeModal('userModal')" style="font-size: 24px;">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-grid" style="gap: 10px;">
+
+
+      <input id="newUserEmail" class="modal-input" type="email" placeholder="User Email" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+      <input id="newUserName" class="modal-input" type="text" placeholder="User Name" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+      <input id="newUserPassword" class="modal-input" type="password" placeholder="Password" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+      <select id="newUserRole" class="modal-input" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+        <option value="User">
+          User
+        </option>
+
+        <option value="Admin">
+          Admin
+        </option>
+
+      </select>
+
+
+    </div>
+
+
+    <button class="modal-action" onclick="addUser()" style="margin-top: 12px; width: 100%; height: 38px; border-radius: 4px;">
+      Add User
+    </button>
+
+
+    <div id="usersContainer">
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     CHANGE PASSWORD MODAL
+     ===================================================== -->
+
+<div id="passwordModal" class="modal" style="padding: 15px;">
+
+  <div class="modal-box" style="width: 100%; max-width: 650px; max-height: 90vh; border-radius: 8px; padding: 18px;">
+
+    <div class="modal-header" style="margin-bottom: 14px;">
+
+      <div class="modal-title" style="font-size: 17px;">
+        Change Password
+      </div>
+
+      <button class="close-btn" onclick="closeModal('passwordModal')" style="font-size: 24px;">
+        ×
+      </button>
+
+    </div>
+
+
+    <input id="oldPassword" class="modal-input modal-full" type="password" placeholder="Current Password" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+    <br><br>
+
+    <input id="newPassword" class="modal-input modal-full" type="password" placeholder="New Password" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+    <br><br>
+
+    <input id="confirmPassword" class="modal-input modal-full" type="password" placeholder="Confirm New Password" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+
+    <button class="modal-action" onclick="changePassword()" style="margin-top: 12px; width: 100%; height: 38px; border-radius: 4px;">
+      Change Password
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     SEARCH MODAL
+     ===================================================== -->
+
+<div id="searchModal" class="modal" style="padding: 15px;">
+
+  <div class="modal-box" style="width: 100%; max-width: 650px; max-height: 90vh; border-radius: 8px; padding: 18px;">
+
+    <div class="modal-header" style="margin-bottom: 14px;">
+
+      <div class="modal-title" style="font-size: 17px;">
+        Search Existing Indent
+      </div>
+
+      <button class="close-btn" onclick="closeModal('searchModal')" style="font-size: 24px;">
+        ×
+      </button>
+
+    </div>
+
+
+    <input id="searchIndentInput" class="modal-input modal-full" type="text" placeholder="Example: IND-00001" style="width: 100%; height: 36px; border-radius: 4px; padding: 0 8px; font-size: 12px;">
+
+
+    <button class="modal-action" onclick="performSearch()" style="margin-top: 12px; width: 100%; height: 38px; border-radius: 4px;">
+      Search
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     LOADING
+     ===================================================== -->
+
+<div id="loading">
+
+  <div class="loading-box" style="border-radius: 8px; padding: 20px 28px; font-size: 13px;">
+
+    <div class="spinner" style="width: 28px; height: 28px; border-radius: 50%; margin: 0 auto 10px;">
+    </div>
+
+    Processing...
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   CUSTOM ALERT DIALOG
+   Replaces browser-native alert boxes so the browser's
+   "An embedded page at ... says" URL header is not shown.
+   ===================================================== */
+(function () {
+  var alertStyleId = "customAppAlertStyles";
+  if (!document.getElementById(alertStyleId)) {
+    var style = document.createElement("style");
+    style.id = alertStyleId;
+    style.textContent = `
+      #customAppAlertOverlay {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 2147483647 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        background: rgba(15, 23, 42, .48) !important;
+        box-sizing: border-box !important;
+      }
+      #customAppAlertBox {
+        width: min(100%, 440px) !important;
+        max-height: 85vh !important;
+        overflow: auto !important;
+        background: #fff !important;
+        color: #1f2937 !important;
+        border-radius: 14px !important;
+        box-shadow: 0 18px 55px rgba(0,0,0,.28) !important;
+        padding: 24px !important;
+        box-sizing: border-box !important;
+        font: 15px/1.55 Arial, sans-serif !important;
+        white-space: pre-wrap !important;
+        overflow-wrap: anywhere !important;
+      }
+      #customAppAlertMessage {
+        margin: 0 0 22px !important;
+        white-space: pre-wrap !important;
+        overflow-wrap: anywhere !important;
+      }
+      #customAppAlertOk {
+        display: block !important;
+        margin-left: auto !important;
+        min-width: 88px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        padding: 10px 22px !important;
+        background: #6554c0 !important;
+        color: #fff !important;
+        font: 600 14px Arial, sans-serif !important;
+        cursor: pointer !important;
+      }
+      #customAppAlertOk:focus {
+        outline: 3px solid rgba(101,84,192,.3) !important;
+        outline-offset: 2px !important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
+  window.alert = function (message) {
+    var old = document.getElementById("customAppAlertOverlay");
+    if (old) old.remove();
+
+    var overlay = document.createElement("div");
+    overlay.id = "customAppAlertOverlay";
+    overlay.setAttribute("role", "presentation");
+
+    var box = document.createElement("div");
+    box.id = "customAppAlertBox";
+    box.setAttribute("role", "alertdialog");
+    box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-labelledby", "customAppAlertTitle");
+    box.setAttribute("aria-describedby", "customAppAlertMessage");
+
+    var title = document.createElement("div");
+    title.id = "customAppAlertTitle";
+    title.textContent = "Message";
+    title.style.cssText = "font-weight:700;font-size:18px;margin:0 0 12px;color:#111827;";
+
+    var msg = document.createElement("div");
+    msg.id = "customAppAlertMessage";
+    msg.textContent = String(message == null ? "" : message);
+
+    var ok = document.createElement("button");
+    ok.id = "customAppAlertOk";
+    ok.type = "button";
+    ok.textContent = "OK";
+    ok.addEventListener("click", function () {
+      overlay.remove();
+    });
+
+    box.appendChild(title);
+    box.appendChild(msg);
+    box.appendChild(ok);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    ok.focus();
+
+    overlay.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" || event.key === "Enter") {
+        event.preventDefault();
+        overlay.remove();
+      }
+    });
+  };
+})();
+
+
+
+
+/* =====================================================
+   GLOBAL VARIABLES
+   ===================================================== */
+
+let SESSION_TOKEN = "";
+
+let CURRENT_USER = null;
+
+let RECIPIENTS = [];
+let SIGNATURE_BUNDLE = { engineers: [], inventoryPeople: [], prepareEngineer: "", inventoryCheck: "", inventoryPrepare: "" };
+let INDENT_OPTIONS = [];
+let MATERIAL_SUGGESTIONS_LOADED = false;
+let MATERIAL_SUGGESTION_NAMES = [];
+let EQUIPMENT_HISTORY_LOADED = false;
+let EQUIPMENT_CODES = [];
+let LAST_UNIT_BY_EQUIPMENT_MATERIAL = Object.create(null);
+let LAST_UNIT_BY_MATERIAL = Object.create(null);
+
+let SYSTEM_READY = false;
+
+
+
+/* =====================================================
+   INITIAL LOAD
+   ===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    buildMaterialRows();
+
+    setToday();
+
+    checkExistingSession();
+
+  }
+);
+
+
+
+/* =====================================================
+   DYNAMIC MATERIAL ROWS
+   Keeps the initial 10 rows and allows additional rows as needed.
+   ===================================================== */
+
+function createMaterialRow(index) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+      <td class="sl"><div class="sl-number">${index}</div></td>
+      <td>
+        <div class="material-autocomplete">
+          <input type="text" class="material-input material" placeholder="Material Description"
+            autocomplete="off" onfocus="showMaterialSuggestions(this)"
+            oninput="handleMaterialInput(this)" onchange="applyLastUnitToRow(this)">
+          <div class="material-suggestion-list" role="listbox"></div>
+        </div>
+      </td>
+      <td><input type="text" class="material-input unit" placeholder="Unit" oninput="markUnitManual(this)"></td>
+      <td><input type="number" step="any" min="0" class="material-input number-input require" placeholder="0" oninput="calculateRow(this)"></td>
+      <td><input type="number" step="any" min="0" class="material-input number-input stock" placeholder="0" oninput="calculateRow(this)"></td>
+      <td><input type="text" class="material-input actual-input actual" value="0" readonly tabindex="-1"></td>
+      <td><input type="text" class="material-input remarks" placeholder="Remarks"></td>
+  `;
+  return tr;
+}
+
+function renumberMaterialRows() {
+  const rows = document.querySelectorAll("#materialBody tr");
+  rows.forEach((row, index) => {
+    const number = row.querySelector(".sl-number");
+    if (number) number.textContent = index + 1;
+  });
+  const count = document.getElementById("materialRowCount");
+  if (count) count.textContent = rows.length + (rows.length === 1 ? " row" : " rows");
+}
+
+function addMaterialRow() {
+  const body = document.getElementById("materialBody");
+  body.appendChild(createMaterialRow(body.rows.length + 1));
+  renumberMaterialRows();
+}
+
+function buildMaterialRows() {
+  const body = document.getElementById("materialBody");
+  body.innerHTML = "";
+  for (let i = 1; i <= 10; i++) {
+    body.appendChild(createMaterialRow(i));
+  }
+  renumberMaterialRows();
+}
+
+
+
+/* =====================================================
+   MATERIAL DESCRIPTION SUGGESTIONS
+   Existing names are suggested, but custom names remain allowed.
+   ===================================================== */
+
+function loadMaterialSuggestions(forceReload) {
+  if (!SESSION_TOKEN || (MATERIAL_SUGGESTIONS_LOADED && !forceReload)) return;
+  google.script.run
+    .withSuccessHandler(function(names) {
+      const uniqueNames = new Map();
+      (Array.isArray(names) ? names : []).forEach(function(name) {
+        const value = String(name || "").normalize("NFKC").replace(/[\s\u00A0]+/g, " ").trim();
+        if (!value) return;
+        const key = value.toLocaleLowerCase().replace(/[\s\u00A0]+/g, " ").trim();
+        if (!uniqueNames.has(key)) uniqueNames.set(key, value);
+      });
+      // Every imported/previously used material name is retained; no result cap.
+      MATERIAL_SUGGESTION_NAMES = Array.from(uniqueNames.values())
+        .sort(function(a, b) { return a.localeCompare(b, undefined, {sensitivity: "base"}); });
+
+      const datalist = document.getElementById("materialSuggestions");
+      if (datalist) {
+        datalist.innerHTML = "";
+        MATERIAL_SUGGESTION_NAMES.forEach(function(name) {
+          const option = document.createElement("option");
+          option.value = name;
+          datalist.appendChild(option);
+        });
+      }
+      MATERIAL_SUGGESTIONS_LOADED = true;
+      const focused = document.activeElement;
+      if (focused && focused.classList && focused.classList.contains("material")) showMaterialSuggestions(focused);
+    })
+    .withFailureHandler(function() {})
+    .getMaterialSuggestionsWeb(SESSION_TOKEN);
+}
+
+function renderMaterialSuggestionList(input) {
+  if (!input) return;
+  const wrapper = input.closest(".material-autocomplete");
+  const list = wrapper && wrapper.querySelector(".material-suggestion-list");
+  if (!list) return;
+  const query = normalizeHistoryKey(input.value);
+  const matches = MATERIAL_SUGGESTION_NAMES.filter(function(name) {
+    return !query || normalizeHistoryKey(name).includes(query);
+  });
+  list.innerHTML = "";
+  if (!matches.length) {
+    const empty = document.createElement("div");
+    empty.className = "material-suggestion-empty";
+    empty.textContent = query ? "No matching saved material" : "No saved materials";
+    list.appendChild(empty);
+  } else {
+    // Render every matching item. The panel scrolls rather than truncating the list.
+    matches.forEach(function(name) {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "material-suggestion-option";
+      option.setAttribute("role", "option");
+      option.textContent = name;
+      option.addEventListener("mousedown", function(event) {
+        event.preventDefault();
+        input.value = name;
+        closeMaterialSuggestions();
+        applyLastUnitToRow(input);
+        input.dispatchEvent(new Event("change", {bubbles: true}));
+      });
+      list.appendChild(option);
+    });
+  }
+  list.style.display = "block";
+}
+
+function showMaterialSuggestions(input) {
+  if (!input) return;
+  document.querySelectorAll(".material-suggestion-list").forEach(function(list) { list.style.display = "none"; });
+  renderMaterialSuggestionList(input);
+  if (!MATERIAL_SUGGESTIONS_LOADED) loadMaterialSuggestions(false);
+}
+
+function handleMaterialInput(input) {
+  if (!input) return;
+  applyLastUnitToRow(input);
+  renderMaterialSuggestionList(input);
+}
+
+function closeMaterialSuggestions() {
+  document.querySelectorAll(".material-suggestion-list").forEach(function(list) { list.style.display = "none"; });
+}
+
+document.addEventListener("click", function(event) {
+  if (!event.target.closest || !event.target.closest(".material-autocomplete")) closeMaterialSuggestions();
+});
+
+function normalizeHistoryKey(value) {
+  return String(value == null ? "" : value).replace(/\s+/g, " ").trim().toLocaleLowerCase();
+}
+
+function loadEquipmentMaterialHistory(forceReload) {
+  if (!SESSION_TOKEN || (EQUIPMENT_HISTORY_LOADED && !forceReload)) return;
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      result = result || {};
+      EQUIPMENT_CODES = Array.isArray(result.equipmentCodes) ? result.equipmentCodes : [];
+      LAST_UNIT_BY_EQUIPMENT_MATERIAL = Object.create(null);
+      LAST_UNIT_BY_MATERIAL = Object.create(null);
+
+      // Backend returns newest records first. Keep the first (latest) match.
+      (Array.isArray(result.records) ? result.records : []).forEach(function(record) {
+        const materialKey = normalizeHistoryKey(record.material);
+        const equipmentKey = normalizeHistoryKey(record.equipment);
+        const unit = String(record.unit || "").trim();
+        if (!materialKey || !unit) return;
+
+        if (!LAST_UNIT_BY_MATERIAL[materialKey]) LAST_UNIT_BY_MATERIAL[materialKey] = unit;
+        if (equipmentKey) {
+          const pairKey = equipmentKey + "|||" + materialKey;
+          if (!LAST_UNIT_BY_EQUIPMENT_MATERIAL[pairKey]) LAST_UNIT_BY_EQUIPMENT_MATERIAL[pairKey] = unit;
+        }
+      });
+
+      const datalist = document.getElementById("equipmentSuggestions");
+      if (datalist) {
+        datalist.innerHTML = "";
+        const uniqueCodes = new Map();
+        EQUIPMENT_CODES.forEach(function(code) {
+          const value = String(code || "").normalize("NFKC").replace(/[\s\u00A0]+/g, " ").trim();
+          if (!value) return;
+          const key = value.toLocaleLowerCase().replace(/[\s\u00A0]+/g, " ").trim();
+          if (!uniqueCodes.has(key)) uniqueCodes.set(key, value);
+        });
+        Array.from(uniqueCodes.values()).forEach(function(code) {
+          const option = document.createElement("option");
+          option.value = code;
+          datalist.appendChild(option);
+        });
+      }
+
+      EQUIPMENT_HISTORY_LOADED = true;
+      applyLastUnitsForEquipment();
+    })
+    .withFailureHandler(function() {
+      // History suggestions are optional; manual entry remains available.
+    })
+    .getEquipmentMaterialHistoryWeb(SESSION_TOKEN);
+}
+
+function getLastUnitFor(material, equipment) {
+  const materialKey = normalizeHistoryKey(material);
+  const equipmentKey = normalizeHistoryKey(equipment);
+  if (!materialKey) return "";
+  if (equipmentKey) {
+    const pairKey = equipmentKey + "|||" + materialKey;
+    if (LAST_UNIT_BY_EQUIPMENT_MATERIAL[pairKey]) return LAST_UNIT_BY_EQUIPMENT_MATERIAL[pairKey];
+  }
+  return LAST_UNIT_BY_MATERIAL[materialKey] || "";
+}
+
+function applyLastUnitToRow(materialInput) {
+  if (!materialInput) return;
+  const row = materialInput.closest("tr");
+  if (!row) return;
+  const unitInput = row.querySelector(".unit");
+  if (!unitInput) return;
+
+  // Never overwrite a unit the user has manually edited.
+  if (unitInput.value.trim() && unitInput.dataset.autoFilled !== "true") return;
+  const unit = getLastUnitFor(materialInput.value, document.getElementById("equipment").value);
+  if (unit) {
+    unitInput.value = unit;
+    unitInput.dataset.autoFilled = "true";
+  } else if (unitInput.dataset.autoFilled === "true") {
+    unitInput.value = "";
+    delete unitInput.dataset.autoFilled;
+  }
+}
+
+function applyLastUnitsForEquipment() {
+  if (!EQUIPMENT_HISTORY_LOADED) return;
+  document.querySelectorAll("#materialBody tr").forEach(function(row) {
+    const materialInput = row.querySelector(".material");
+    const unitInput = row.querySelector(".unit");
+    if (!materialInput || !unitInput) return;
+    if (!unitInput.value.trim() || unitInput.dataset.autoFilled === "true") applyLastUnitToRow(materialInput);
+  });
+}
+
+function markUnitManual(unitInput) {
+  if (unitInput) delete unitInput.dataset.autoFilled;
+}
+
+
+/* =====================================================
+   TODAY
+   ===================================================== */
+
+function setToday() {
+
+  const d =
+    new Date();
+
+  const yyyy =
+    d.getFullYear();
+
+  const mm =
+    String(
+      d.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+  const dd =
+    String(
+      d.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  document.getElementById(
+    "date"
+  ).value =
+    `${yyyy}-${mm}-${dd}`;
+
+}
+
+
+
+/* =====================================================
+   SESSION
+   ===================================================== */
+
+function checkExistingSession() {
+
+  showLoading(
+    true
+  );
+
+
+  /*
+   * Browser localStorage token
+   */
+
+  const token =
+    localStorage.getItem(
+      "MPDP_SESSION_TOKEN"
+    );
+
+
+  if (!token) {
+
+    showLoading(false);
+
+    showLogin();
+
+    return;
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        if (
+          result &&
+          result.ok
+        ) {
+
+          SESSION_TOKEN =
+            token;
+
+          CURRENT_USER =
+            result.user;
+
+          showApp();
+
+        } else {
+
+          localStorage.removeItem(
+            "MPDP_SESSION_TOKEN"
+          );
+
+          showLogin();
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function() {
+
+        showLoading(false);
+
+        showLogin();
+
+      }
+    )
+
+    .getSession(token);
+
+}
+
+
+
+/* =====================================================
+   LOGIN
+   ===================================================== */
+
+function loginUser() {
+
+  const email =
+    document.getElementById(
+      "loginEmail"
+    ).value.trim();
+
+
+  const password =
+    document.getElementById(
+      "loginPassword"
+    ).value;
+
+
+  const error =
+    document.getElementById(
+      "loginError"
+    );
+
+
+  error.style.display =
+    "none";
+
+
+  if (!email) {
+
+    showLoginError(
+      "Email দিন."
+    );
+
+    return;
+  }
+
+
+  if (!password) {
+
+    showLoginError(
+      "Password দিন."
+    );
+
+    return;
+  }
+
+
+  showLoading(true);
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        if (
+          result &&
+          result.ok
+        ) {
+
+          SESSION_TOKEN =
+            result.token;
+
+          CURRENT_USER =
+            result.user;
+
+
+          localStorage.setItem(
+            "MPDP_SESSION_TOKEN",
+            SESSION_TOKEN
+          );
+
+
+          document.getElementById(
+            "loginPassword"
+          ).value = "";
+
+
+          showApp();
+
+        } else {
+
+          showLoginError(
+            result.message ||
+            "Login failed."
+          );
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        showLoginError(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .login(
+      email,
+      password
+    );
+
+}
+
+
+
+/* =====================================================
+   SHOW LOGIN
+   ===================================================== */
+
+function showLogin() {
+
+  document.getElementById(
+    "loginPage"
+  ).style.display =
+    "flex";
+
+
+  document.getElementById(
+    "appPage"
+  ).style.display =
+    "none";
+
+}
+
+
+
+/* =====================================================
+   SHOW APP
+   ===================================================== */
+
+function showApp() {
+
+  document.getElementById(
+    "loginPage"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "appPage"
+  ).style.display =
+    "block";
+
+
+  if (CURRENT_USER) {
+
+    document.getElementById(
+      "loggedUserName"
+    ).textContent =
+      CURRENT_USER.name;
+
+
+    document.getElementById(
+      "loggedUserRole"
+    ).textContent =
+      CURRENT_USER.role;
+
+  }
+
+
+  if (
+    CURRENT_USER &&
+    String(
+      CURRENT_USER.role
+    ).toLowerCase() ===
+    "admin"
+  ) {
+
+    document.getElementById(
+      "adminPanel"
+    ).style.display =
+      "block";
+
+  } else {
+
+    document.getElementById(
+      "adminPanel"
+    ).style.display =
+      "none";
+
+  }
+
+
+  loadWebData();
+
+  loadMaterialSuggestions();
+
+  loadEquipmentMaterialHistory();
+
+  generateNextIndent();
+
+}
+
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+function logoutUser() {
+
+  if (!SESSION_TOKEN) {
+
+    showLogin();
+
+    return;
+  }
+
+
+  showLoading(true);
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function() {
+
+        showLoading(false);
+
+
+        localStorage.removeItem(
+          "MPDP_SESSION_TOKEN"
+        );
+
+
+        SESSION_TOKEN = "";
+
+        CURRENT_USER = null;
+
+
+        showLogin();
+
+      }
+    )
+
+    .withFailureHandler(
+      function() {
+
+        showLoading(false);
+
+        localStorage.removeItem(
+          "MPDP_SESSION_TOKEN"
+        );
+
+        SESSION_TOKEN = "";
+
+        CURRENT_USER = null;
+
+        showLogin();
+
+      }
+    )
+
+    .logout(
+      SESSION_TOKEN
+    );
+
+}
+
+
+
+/* =====================================================
+   GENERATE NEXT INDENT
+   ===================================================== */
+
+function generateNextIndent() {
+
+  if (!SESSION_TOKEN) {
+    return;
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(next) {
+
+        document.getElementById(
+          "indentNumber"
+        ).value =
+          next || "";
+
+
+        document.getElementById(
+          "sideIndent"
+        ).value =
+          next || "";
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        setStatus(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .setNextIndentNumber();
+
+}
+
+
+
+/* =====================================================
+   CALCULATE ROW
+   ===================================================== */
+
+function calculateRow(el) {
+
+  const row =
+    el.closest("tr");
+
+
+  const req =
+    Number(
+      row.querySelector(
+        ".require"
+      ).value
+    ) || 0;
+
+
+  const stock =
+    Number(
+      row.querySelector(
+        ".stock"
+      ).value
+    ) || 0;
+
+
+  const actual =
+    Math.max(
+      req - stock,
+      0
+    );
+
+
+  row.querySelector(
+    ".actual"
+  ).value =
+    formatNumber(actual);
+
+
+  calculateTotal();
+
+}
+
+
+
+/* =====================================================
+   TOTAL
+   ===================================================== */
+
+function calculateTotal() {
+
+  let total = 0;
+
+
+  document
+    .querySelectorAll(
+      ".actual"
+    )
+    .forEach(
+      input => {
+
+        total +=
+          Number(
+            input.value
+          ) || 0;
+
+      }
+    );
+
+
+  document.getElementById(
+    "totalActual"
+  ).textContent =
+    formatNumber(total);
+
+}
+
+
+
+/* =====================================================
+   FORMAT NUMBER
+   ===================================================== */
+
+function formatNumber(n) {
+
+  if (
+    Number.isInteger(n)
+  ) {
+
+    return String(n);
+
+  }
+
+
+  return String(
+    Number(
+      n.toFixed(3)
+    )
+  );
+
+}
+
+
+
+/* =====================================================
+   COLLECT ITEMS
+   ===================================================== */
+
+function collectItems() {
+
+  const rows =
+    document.querySelectorAll(
+      "#materialBody tr"
+    );
+
+
+  const items = [];
+
+
+  rows.forEach(
+    row => {
+
+      const material =
+        row.querySelector(
+          ".material"
+        ).value.trim();
+
+
+      const unit =
+        row.querySelector(
+          ".unit"
+        ).value.trim();
+
+
+      const requireQty =
+        Number(
+          row.querySelector(
+            ".require"
+          ).value
+        ) || 0;
+
+
+      const presentStock =
+        Number(
+          row.querySelector(
+            ".stock"
+          ).value
+        ) || 0;
+
+
+      const actual =
+        Math.max(
+          requireQty -
+          presentStock,
+          0
+        );
+
+
+      const remarks =
+        row.querySelector(
+          ".remarks"
+        ).value.trim();
+
+
+      if (material) {
+
+        items.push({
+
+          material:
+            material,
+
+          unit:
+            unit,
+
+          requireQty:
+            requireQty,
+
+          presentStock:
+            presentStock,
+
+          actual:
+            actual,
+
+          remarks:
+            remarks
+
+        });
+
+      }
+
+    }
+  );
+
+
+  return items;
+
+}
+
+
+
+/* =====================================================
+   SUBMIT INDENT
+   ===================================================== */
+
+function submitIndent() {
+
+  if (!SESSION_TOKEN) {
+
+    alert(
+      "Please login first."
+    );
+
+    return;
+  }
+
+
+  const items =
+    collectItems();
+
+
+  if (!items.length) {
+
+    alert(
+      "কমপক্ষে একটি Material Description দিন."
+    );
+
+    return;
+  }
+
+
+  const payload = {
+
+    date:
+      document.getElementById(
+        "date"
+      ).value,
+
+    indent:
+      document.getElementById(
+        "indentNumber"
+      ).value,
+
+    equipment:
+      document.getElementById(
+        "equipment"
+      ).value.trim(),
+
+    presentHour:
+      document.getElementById(
+        "presentHour"
+      ).value.trim(),
+
+    items:
+      items
+
+  };
+
+
+  showLoading(true);
+
+
+  setStatus(
+    "Saving indent..."
+  );
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        if (
+          result &&
+          result.ok
+        ) {
+
+          document.getElementById(
+            "indentNumber"
+          ).value =
+            result.indentNumber;
+
+
+          document.getElementById(
+            "sideIndent"
+          ).value =
+            result.indentNumber;
+
+
+          setStatus(
+            "Indent saved successfully. " +
+            result.indentNumber
+          );
+
+
+          alert(
+
+            "✅ Indent Submitted Successfully\n\n" +
+
+            "Submitted: " +
+            result.indentNumber +
+
+            "\nItems: " +
+            result.itemCount +
+
+            "\n\nNext Indent: " +
+            result.nextIndent
+
+          );
+
+
+          /*
+           * New form
+           */
+
+          clearMaterialRows();
+
+
+          document.getElementById(
+            "equipment"
+          ).value = "";
+
+
+          document.getElementById(
+            "presentHour"
+          ).value = "";
+
+
+          document.getElementById(
+            "indentNumber"
+          ).value =
+            result.nextIndent;
+
+
+          document.getElementById(
+            "sideIndent"
+          ).value =
+            result.nextIndent;
+
+
+          calculateTotal();
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        setStatus(
+          "Error: " +
+          getErrorMessage(err)
+        );
+
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .submitIndentWeb(
+      SESSION_TOKEN,
+      payload
+    );
+
+}
+
+
+
+/* =====================================================
+   CLEAR MATERIAL ROWS
+   ===================================================== */
+
+function clearMaterialRows() {
+
+  const body = document.getElementById("materialBody");
+  if (body && body.rows.length !== 10) buildMaterialRows();
+
+  document
+    .querySelectorAll(
+      ".material"
+    )
+    .forEach(
+      x => x.value = ""
+    );
+
+
+  document
+    .querySelectorAll(
+      ".unit"
+    )
+    .forEach(
+      x => {
+        x.value = "";
+        delete x.dataset.autoFilled;
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      ".require"
+    )
+    .forEach(
+      x => x.value = ""
+    );
+
+
+  document
+    .querySelectorAll(
+      ".stock"
+    )
+    .forEach(
+      x => x.value = ""
+    );
+
+
+  document
+    .querySelectorAll(
+      ".actual"
+    )
+    .forEach(
+      x => x.value = "0"
+    );
+
+
+  document
+    .querySelectorAll(
+      ".remarks"
+    )
+    .forEach(
+      x => x.value = ""
+    );
+
+
+  calculateTotal();
+
+}
+
+
+
+/* =====================================================
+   CLEAR FORM
+   ===================================================== */
+
+function clearForm() {
+
+  appMessageConfirm("Form clear করবেন?").then(function(confirmed) {
+    if (!confirmed) return;
+
+    clearMaterialRows();
+
+
+  document.getElementById(
+    "equipment"
+  ).value = "";
+
+
+  document.getElementById(
+    "presentHour"
+  ).value = "";
+
+
+  setToday();
+
+
+  generateNextIndent();
+
+
+    setStatus(
+      "Form cleared."
+    );
+  });
+}
+
+
+
+/* =====================================================
+   LOAD EMAIL DATA
+   ===================================================== */
+
+function loadWebData() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(data) {
+
+        if (!data) {
+          return;
+        }
+
+
+        RECIPIENTS = data.recipients || [];
+        SIGNATURE_BUNDLE = data.signatureBundle || SIGNATURE_BUNDLE;
+        renderEngineerOptions(SIGNATURE_BUNDLE.engineers || []);
+        renderEngineerNameInputs(SIGNATURE_BUNDLE.engineers || []);
+        renderInventoryOptions(SIGNATURE_BUNDLE.inventoryPeople || []);
+        renderInventoryNameInputs(SIGNATURE_BUNDLE.inventoryPeople || []);
+        renderInventorySignaturePreview();
+        renderEngineerSignaturePreview();
+
+        INDENT_OPTIONS =
+          data.indentOptions ||
+          [];
+
+
+        renderIndentOptions(
+          INDENT_OPTIONS
+        );
+        renderRecentIndents(INDENT_OPTIONS);
+
+
+        if (
+          data.currentIndent
+        ) {
+
+          document.getElementById(
+            "sideIndent"
+          ).value =
+            data.currentIndent;
+
+        }
+
+
+        if (
+          data.googleAccountEmail
+        ) {
+
+          setStatus(
+            "Ready — Google account: " +
+            data.googleAccountEmail
+          );
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        setStatus(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .getWebEmailData(
+      SESSION_TOKEN
+    );
+
+}
+
+
+/* =====================================================
+   INDENT OPTIONS / RELOAD
+   ===================================================== */
+
+function renderIndentOptions(
+  options
+) {
+
+  const list =
+    document.getElementById(
+      "indentOptions"
+    );
+
+
+  if (!list) {
+    return;
+  }
+
+
+  list.innerHTML = "";
+
+
+  (options || [])
+    .forEach(
+      function(value) {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+        option.value =
+          value;
+
+        list.appendChild(
+          option
+        );
+
+      }
+    );
+
+}
+
+
+function syncIndentInputs(
+  value
+) {
+
+  const side =
+    document.getElementById(
+      "sideIndent"
+    );
+
+
+  if (side) {
+    side.value = value || "";
+  }
+
+}
+
+
+function getSelectedIndent() {
+
+  const side =
+    document.getElementById(
+      "sideIndent"
+    );
+
+
+  const main =
+    document.getElementById(
+      "indentNumber"
+    );
+
+
+  return (
+    side &&
+    side.value.trim()
+  ) ||
+  (
+    main &&
+    main.value.trim()
+  ) ||
+  "";
+
+}
+
+
+function loadSelectedIndent(
+  value
+) {
+
+  if (!SESSION_TOKEN) {
+    return;
+  }
+
+
+  const indent =
+    String(
+      value || ""
+    ).trim();
+
+
+  if (!indent) {
+    return;
+  }
+
+
+  syncIndentInputs(
+    indent
+  );
+
+
+  showLoading(true);
+
+  setStatus(
+    "Loading indent " +
+    indent +
+    "..."
+  );
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(data) {
+
+        showLoading(false);
+
+
+        if (!data) {
+
+          alert(
+            "Indent পাওয়া যায়নি."
+          );
+
+          return;
+
+        }
+
+
+        loadIndentToForm(
+          data
+        );
+
+
+        setStatus(
+          "Indent loaded: " +
+          data.indentNumber
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        setStatus(
+          "Error: " +
+          getErrorMessage(err)
+        );
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .searchIndentWeb(
+      SESSION_TOKEN,
+      indent
+    );
+
+}
+
+
+function reloadSelectedIndent() {
+
+  const indent =
+    getSelectedIndent();
+
+
+  if (!indent) {
+
+    alert(
+      "Indent Number দিন."
+    );
+
+    return;
+
+  }
+
+
+  showLoading(true);
+
+  setStatus(
+    "Reloading indent " +
+    indent +
+    "..."
+  );
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(data) {
+
+        showLoading(false);
+
+        loadIndentToForm(
+          data
+        );
+
+        setStatus(
+          "Indent reloaded: " +
+          data.indentNumber
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        setStatus(
+          "Reload failed: " +
+          getErrorMessage(err)
+        );
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .reloadIndentWeb(
+      SESSION_TOKEN,
+      indent
+    );
+
+}
+
+
+/* =====================================================
+   ENGINEER + SIGNATURE ADMIN
+   ===================================================== */
+function renderEngineerOptions(engineers) {
+  const select = document.getElementById("engineerSelect");
+  const uploadSelect = document.getElementById("uploadEngineerSelect");
+  const list = engineers || [];
+  if (select) {
+    const previous = select.value || "engineer1";
+    select.innerHTML = "";
+    list.forEach(function(e) {
+      const opt = document.createElement("option");
+      opt.value = e.id;
+      opt.textContent = e.name;
+      select.appendChild(opt);
+    });
+    if (Array.from(select.options).some(function(o){return o.value === previous;})) select.value = previous;
+  }
+  if (uploadSelect) {
+    const previousUpload = uploadSelect.value || (list[0] && list[0].id) || "engineer1";
+    uploadSelect.innerHTML = "";
+    list.forEach(function(e) {
+      const opt = document.createElement("option");
+      opt.value = e.id;
+      opt.textContent = e.name;
+      uploadSelect.appendChild(opt);
+    });
+    if (Array.from(uploadSelect.options).some(function(o){return o.value === previousUpload;})) uploadSelect.value = previousUpload;
+  }
+  toggleUploadEngineerSelect();
+  renderEngineerSignaturePreview();
+}
+function toggleUploadEngineerSelect() {
+  const slot = document.getElementById("signatureSlot");
+  const wrap = document.getElementById("uploadEngineerWrap");
+  if (wrap && slot) wrap.style.display = slot.value === "prepareEngineer" ? "block" : "none";
+}
+function renderEngineerNameInputs(engineers) {
+  const box = document.getElementById("engineerNameInputs");
+  if (!box) return;
+  box.innerHTML = "";
+  (engineers || []).forEach(function(e, i) {
+    const input = document.createElement("input");
+    input.type = "text"; input.className = "side-input engineer-name-input";
+    input.value = e.name || ""; input.dataset.index = String(i + 1);
+    input.placeholder = "Engineer " + (i + 1) + " name";
+    input.style.marginBottom = "6px";
+    box.appendChild(input);
+  });
+}
+function renderInventoryOptions(people) {
+  const select = document.getElementById("inventorySignatureSelect");
+  const slot = document.getElementById("signatureSlot");
+  const list = people || [];
+  const previous = select ? (select.value || "inventoryPrepare1") : "inventoryPrepare1";
+  if (select) {
+    select.innerHTML = "";
+    list.forEach(function(person) {
+      const opt = document.createElement("option");
+      opt.value = person.id; opt.textContent = person.name; select.appendChild(opt);
+    });
+    if (Array.from(select.options).some(function(o){return o.value === previous;})) select.value = previous;
+  }
+  if (slot) {
+    Array.from(slot.options).forEach(function(opt) {
+      const match = list.filter(function(person){return person.id === opt.value;})[0];
+      if (match) opt.textContent = "Prepare By Inventory Team — " + match.name;
+    });
+  }
+}
+function renderInventoryNameInputs(people) {
+  const box = document.getElementById("inventoryNameInputs");
+  if (!box) return;
+  box.innerHTML = "";
+  (people || []).forEach(function(person, i) {
+    const input = document.createElement("input");
+    input.type = "text"; input.className = "side-input inventory-name-input";
+    input.value = person.name || ""; input.dataset.index = String(i + 1);
+    input.placeholder = "Inventory Person " + (i + 1) + " name";
+    input.style.marginBottom = "6px"; input.style.width = "100%";
+    box.appendChild(input);
+  });
+}
+function renderEngineerSignaturePreview() {
+  const select = document.getElementById("engineerSelect");
+  const preview = document.getElementById("engineerSignaturePreview");
+  const img = document.getElementById("engineerSignaturePreviewImage");
+  const name = document.getElementById("engineerSignaturePreviewName");
+  if (!select || !preview || !img || !name) return;
+  const engineer = (SIGNATURE_BUNDLE.engineers || []).filter(function(e){ return e.id === select.value; })[0];
+  const signature = engineer ? (engineer.signature || "") : "";
+  name.textContent = engineer ? engineer.name : "";
+  if (signature) {
+    img.src = signature; img.style.display = "inline-block"; preview.style.display = "block";
+  } else {
+    img.removeAttribute("src"); img.style.display = "none";
+    preview.style.display = engineer ? "block" : "none";
+    name.textContent = (engineer ? engineer.name : "") + " — signature not uploaded";
+  }
+}
+function toggleRecentIndents() {
+  const panel = document.getElementById("recentIndentsPanel");
+  const button = document.querySelector(".recent-toggle-btn");
+  if (!panel || !button) return;
+  const opening = panel.style.display === "none" || !panel.style.display;
+  panel.style.display = opening ? "block" : "none";
+  button.setAttribute("aria-expanded", opening ? "true" : "false");
+}
+
+function renderRecentIndents(indents) {
+  const box = document.getElementById("recentIndentsList");
+  if (!box) return;
+  const list = (indents || []).slice(0, 10);
+  box.innerHTML = "";
+  if (!list.length) { box.textContent = "কোনো Indent পাওয়া যায়নি।"; return; }
+  list.forEach(function(indent) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.textContent = indent;
+    item.title = "এই Indent খুলুন";
+    item.style.cssText = "display:inline-flex;align-items:center;text-align:left;padding:6px 12px;margin:0;border:1px solid #dbe3ef;border-radius:4px;background:#f8fafc;color:#174ea6;cursor:pointer;font-size:12px;min-height:30px";
+    item.onclick = function() {
+      const field = document.getElementById("sideIndent");
+      if (field) field.value = indent;
+      const mainField = document.getElementById("indentNumber");
+      if (mainField) mainField.value = indent;
+      loadSelectedIndent(indent);
+    };
+    box.appendChild(item);
+  });
+}
+
+function renderInventorySignaturePreview() {
+  const select = document.getElementById("inventorySignatureSelect");
+  const preview = document.getElementById("inventorySignaturePreview");
+  const img = document.getElementById("inventorySignaturePreviewImage");
+  const name = document.getElementById("inventorySignaturePreviewName");
+  if (!select || !preview || !img || !name) return;
+  const person = (SIGNATURE_BUNDLE.inventoryPeople || []).filter(function(p){return p.id === select.value;})[0];
+  const signature = person ? (person.signature || SIGNATURE_BUNDLE[person.id] || "") : "";
+  name.textContent = person ? person.name : "";
+  if (signature) { img.src = signature; preview.style.display = "block"; img.style.display = "inline-block"; }
+  else { img.removeAttribute("src"); img.style.display = "none"; preview.style.display = person ? "block" : "none"; name.textContent = (person ? person.name : "") + " — signature not uploaded"; }
+}
+function saveInventoryNames() {
+  const names = Array.from(document.querySelectorAll(".inventory-name-input")).map(function(x){return x.value.trim();});
+  showLoading(true);
+  google.script.run.withSuccessHandler(function(result) {
+    showLoading(false);
+    if (result && result.success) {
+      SIGNATURE_BUNDLE.inventoryPeople = result.inventoryPeople;
+      // Preserve the matching signature image for each fixed inventory slot.
+      (SIGNATURE_BUNDLE.inventoryPeople || []).forEach(function(person) { person.signature = SIGNATURE_BUNDLE[person.id] || ""; });
+      renderInventoryOptions(SIGNATURE_BUNDLE.inventoryPeople);
+      renderInventoryNameInputs(SIGNATURE_BUNDLE.inventoryPeople);
+      renderInventorySignaturePreview();
+      setStatus("Inventory Person names saved."); alert("Inventory Person names saved successfully.");
+    }
+  }).withFailureHandler(function(err) { showLoading(false); alert(getErrorMessage(err)); }).saveInventoryNamesWeb(SESSION_TOKEN, names);
+}
+function toggleSignatureAdmin() {
+  const el = document.getElementById("signatureAdmin");
+  if (el) el.style.display = el.style.display === "none" ? "block" : "none";
+}
+function saveEngineerNames() {
+  const names = Array.from(document.querySelectorAll(".engineer-name-input")).map(function(x){return x.value.trim();});
+  showLoading(true);
+  google.script.run.withSuccessHandler(function(result) {
+    showLoading(false);
+    if (result && result.success) {
+      SIGNATURE_BUNDLE.engineers = result.engineers;
+      renderEngineerOptions(result.engineers);
+      renderEngineerNameInputs(result.engineers);
+      setStatus("Engineer names saved."); alert("Engineer names saved successfully.");
+    }
+  }).withFailureHandler(function(err) { showLoading(false); alert(getErrorMessage(err)); }).saveEngineerNamesWeb(SESSION_TOKEN, names);
+}
+function uploadSignatureImage() {
+  const input = document.getElementById("signatureFile");
+  const file = input && input.files && input.files[0];
+  const key = document.getElementById("signatureSlot").value;
+  if (!file) { alert("প্রথমে signature image select করুন."); return; }
+  if (!/^image\/(png|jpeg|webp)$/i.test(file.type)) { alert("PNG, JPG বা WEBP ছবি ব্যবহার করুন."); return; }
+  const reader = new FileReader();
+  reader.onload = function() {
+    const image = new Image();
+    image.onload = function() {
+      // Compress and resize the signature so it can safely fit in a Google Sheet cell.
+      const maxWidth = 480, maxHeight = 160;
+      const scale = Math.min(1, maxWidth / image.width, maxHeight / image.height);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      let dataUrl = canvas.toDataURL("image/jpeg", 0.72);
+      if (dataUrl.length > 47000) dataUrl = canvas.toDataURL("image/jpeg", 0.48);
+      if (dataUrl.length > 48000) {
+        canvas.width = Math.max(1, Math.round(canvas.width * 0.75));
+        canvas.height = Math.max(1, Math.round(canvas.height * 0.75));
+        ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        dataUrl = canvas.toDataURL("image/jpeg", 0.45);
+      }
+      if (dataUrl.length > 48000) { alert("সিগনেচার ছবিটি ছোট করে আবার আপলোড করুন."); return; }
+      showLoading(true);
+      google.script.run.withSuccessHandler(function() {
+        showLoading(false); input.value = ""; setStatus("Signature uploaded to Google Sheet.");
+        loadWebData(); alert("Signature uploaded and saved in the Google Sheet.");
+      }).withFailureHandler(function(err) { showLoading(false); alert(getErrorMessage(err)); })
+        .saveSignatureWeb(SESSION_TOKEN, key, dataUrl, "image/jpeg", file.name,
+          key === "prepareEngineer" ? document.getElementById("uploadEngineerSelect").value : "");
+    };
+    image.onerror = function() { alert("Image file open করা যায়নি."); };
+    image.src = reader.result;
+  };
+  reader.onerror = function() { alert("Image file read করা যায়নি."); };
+  reader.readAsDataURL(file);
+}
+function getSelectedRecipientIndexes() { return []; }
+
+
+/* =====================================================
+   CREATE GMAIL DRAFT
+   ===================================================== */
+
+function createDraft(
+  warehouse
+) {
+
+  if (!SESSION_TOKEN) {
+
+    alert(
+      "Please login first."
+    );
+
+    return;
+  }
+
+
+  const indent =
+    getSelectedIndent();
+
+
+  if (!indent) {
+
+    alert(
+      "Indent Number দিন."
+    );
+
+    return;
+  }
+
+
+  /*
+   * Keep selected store
+   */
+
+  document.getElementById(
+    "warehouse"
+  ).value =
+    warehouse;
+
+
+  const indexes =
+    getSelectedRecipientIndexes();
+
+
+  showLoading(true);
+
+
+  setStatus(
+    "Creating Gmail Draft..."
+  );
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        if (
+          result &&
+          result.success
+        ) {
+
+          setStatus(
+
+            "Gmail Draft created for " +
+            result.indentNumber +
+            " at " +
+            result.warehouse
+
+          );
+
+
+          alert(
+
+            "✅ Gmail Draft Created\n\n" +
+
+            "Indent: " +
+            result.indentNumber +
+
+            "\nStore: " +
+            result.warehouse +
+
+            "\nItems: " +
+            result.itemCount +
+
+            "\nTo: " +
+            result.toCount +
+
+            "\nCC: " +
+            result.ccCount +
+
+            "\nPDF: " +
+            result.pdfName +
+            "\nGmail: " +
+            (result.gmailUser || "")
+
+          );
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+
+        setStatus(
+          "Error: " +
+          getErrorMessage(err)
+        );
+
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .createIndentEmailDraftWeb(
+
+      SESSION_TOKEN,
+
+      indent,
+
+      indexes,
+      warehouse,
+      document.getElementById("customRecipientEmail").value.trim(),
+      document.getElementById("engineerSelect").value,
+      document.getElementById("inventorySignatureSelect").value
+    );
+
+}
+
+
+
+
+
+/* Copy the indent email in the user's exact requested format. */
+function copyIndentToClipboard() {
+  const items = collectItems();
+  if (!items.length) { alert("কমপক্ষে একটি Material Description দিন."); return; }
+  const equipment = document.getElementById("equipment").value || "...";
+  const warehouse = document.getElementById("warehouse").value || "...";
+  const esc = function(v) { return String(v == null ? "" : v).replace(/[&<>\"]/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); };
+  const actualQty = function(x) { return Math.max((Number(x.requireQty)||0)-(Number(x.presentStock)||0),0); };
+  const plainRows = items.map(function(x,i) {
+    return "|  "+String(i+1).padEnd(2," ")+" | "+String(x.material || "").padEnd(36," ")+" | "+String(x.unit || "").padStart(3," ")+" | "+String(x.requireQty == null ? "" : x.requireQty).padStart(11," ")+" | "+String(x.presentStock == null ? "" : x.presentStock).padStart(13," ")+" | "+String(actualQty(x)).padStart(18," ")+" | "+String(x.remarks || "")+" |";
+  }).join("\n");
+  const plain = "Dear Sir,\n\nWe need to mention Spare Parts / Lubricants for **"+equipment+"** at MPDP\n\n|  SL | Material Description                | Unit | Require Qty | Present Stock | Actual Requirement | Remarks |\n| :-: | :---------------------------------- | :--: | :---------: | :-----------: | :----------------: | :------ |\n"+plainRows+"\n\nStore:- "+warehouse+"\n\nPlease see the attached indent copy submitted for your kind approval.\n\nBest Regards";
+  const htmlRows = items.map(function(x,i){ return "<tr><td style='text-align:center'>"+(i+1)+"</td><td>"+esc(x.material)+"</td><td style='text-align:center'>"+esc(x.unit)+"</td><td style='text-align:center'>"+esc(x.requireQty)+"</td><td style='text-align:center'>"+esc(x.presentStock)+"</td><td style='text-align:center'>"+esc(actualQty(x))+"</td><td>"+esc(x.remarks)+"</td></tr>"; }).join("");
+  const htmlBody = "<div style='font-family:Arial,sans-serif;color:#222'><p>Dear Sir,</p><p>We need to mention Spare Parts / Lubricants for <b>"+esc(equipment)+"</b> at MPDP</p><table style='border-collapse:collapse;width:100%;font-size:13px' border='1' cellpadding='6'><thead><tr><th>SL</th><th>Material Description</th><th>Unit</th><th>Require Qty</th><th>Present Stock</th><th>Actual Requirement</th><th>Remarks</th></tr></thead><tbody>"+htmlRows+"</tbody></table><p>Store:- "+esc(warehouse)+"</p><p>Please see the attached indent copy submitted for your kind approval.</p><p>Best Regards</p></div>";
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([htmlBody],{type:"text/html"}),"text/plain":new Blob([plain],{type:"text/plain"})})]).then(function(){setStatus("Indent email copied in the requested format.");alert("Indent copied in the requested format.");}).catch(function(){copyPlainFallback(plain);});
+  } else copyPlainFallback(plain);
+}
+function copyPlainFallback(text) {
+  const ta = document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); setStatus("Indent text copied to clipboard."); alert("Indent copied to clipboard (plain text)."); }
+  catch(e) { alert("Clipboard copy failed. Please use HTTPS or allow clipboard access."); }
+  ta.remove();
+}
+function downloadIndent() {
+  const indent = getSelectedIndent();
+  if (!indent) { alert("Indent Number দিন."); return; }
+  showLoading(true); setStatus("Preparing PDF download...");
+  google.script.run.withSuccessHandler(function(result) {
+    showLoading(false);
+    const bytes = atob(result.base64), arr = new Uint8Array(bytes.length);
+    for (let i=0;i<bytes.length;i++) arr[i]=bytes.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([arr],{type:result.mimeType || "application/pdf"}));
+    const a = document.createElement("a"); a.href=url; a.download=result.name || (indent+"_Indent.pdf"); document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    setStatus("Indent PDF downloaded: "+(result.name || indent));
+  }).withFailureHandler(function(err){showLoading(false);setStatus("Download failed: "+getErrorMessage(err));alert(getErrorMessage(err));})
+  .downloadIndentPdfWeb(SESSION_TOKEN, indent, document.getElementById("engineerSelect").value, document.getElementById("inventorySignatureSelect").value);
+}
+
+/* =====================================================
+   PRINT INDENT
+   ===================================================== */
+
+function printIndent() {
+
+  if (!SESSION_TOKEN) {
+    alert("Please login first.");
+    return;
+  }
+
+  const indent = getSelectedIndent();
+
+  if (!indent) {
+    alert("Indent Number দিন.");
+    return;
+  }
+
+  showLoading(true);
+  setStatus("Preparing printable indent...");
+
+  google.script.run
+    .withSuccessHandler(function(html) {
+
+      showLoading(false);
+
+      if (!html) {
+        setStatus("Print data পাওয়া যায়নি.");
+        alert("Print data পাওয়া যায়নি.");
+        return;
+      }
+
+      const win = window.open("", "_blank");
+
+      if (!win) {
+        setStatus("Popup blocked. Please allow popups for this site.");
+        alert("Print window blocked. Please allow popups for this site.");
+        return;
+      }
+
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+
+      setStatus("Print preview opened for " + indent + ".");
+    })
+    .withFailureHandler(function(err) {
+
+      showLoading(false);
+
+      const message = getErrorMessage(err);
+      setStatus("Error: " + message);
+      alert(message);
+    })
+    .printIndentWeb(
+      SESSION_TOKEN,
+      indent,
+      document.getElementById("engineerSelect").value,
+      document.getElementById("inventorySignatureSelect").value
+    );
+}
+
+
+/* =====================================================
+   SEND NOW
+   ===================================================== */
+
+function sendNow() {
+
+  if (!SESSION_TOKEN) {
+
+    alert(
+      "Please login first."
+    );
+
+    return;
+  }
+
+
+  const indent =
+    getSelectedIndent();
+
+
+  const warehouse =
+    document.getElementById(
+      "warehouse"
+    ).value;
+
+
+  if (!indent) {
+
+    alert(
+      "Indent Number দিন."
+    );
+
+    return;
+  }
+
+
+  if (
+    !confirm(
+      "Email এখনই Send করবেন?"
+    )
+  ) {
+
+    return;
+  }
+
+
+  const indexes =
+    getSelectedRecipientIndexes();
+
+
+  showLoading(true);
+
+
+  setStatus(
+    "Sending email..."
+  );
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        if (
+          result &&
+          result.success
+        ) {
+
+          setStatus(
+            "Email sent successfully from " +
+            (result.gmailUser || "your Gmail account") +
+            "."
+          );
+
+
+          alert(
+
+            "✅ Email Sent Successfully\n\n" +
+
+            "Indent: " +
+            result.indentNumber +
+
+            "\nStore: " +
+            result.warehouse +
+
+            "\nItems: " +
+            result.itemCount
+
+          );
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+
+        setStatus(
+          "Error: " +
+          getErrorMessage(err)
+        );
+
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .sendIndentEmailWeb(
+
+      SESSION_TOKEN,
+
+      indent,
+
+      indexes,
+      warehouse,
+      document.getElementById("customRecipientEmail").value.trim(),
+      document.getElementById("engineerSelect").value,
+      document.getElementById("inventorySignatureSelect").value
+    );
+
+}
+
+
+
+/* =====================================================
+   SEND TO ONE ADDITIONAL EMAIL ONLY
+   ===================================================== */
+function sendToSingleEmail() {
+  if (!SESSION_TOKEN) { alert("Please login first."); return; }
+  const indent = getSelectedIndent();
+  const warehouse = document.getElementById("warehouse").value;
+  const emailInput = document.getElementById("customRecipientEmail");
+  const email = (emailInput.value || "").trim();
+  if (!indent) { alert("Indent Number দিন."); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert("একজন প্রাপকের সঠিক ইমেইল ঠিকানা লিখুন."); emailInput.focus(); return;
+  }
+  if (!confirm("শুধু এই ইমেইল ঠিকানায় Indent PDF পাঠাবেন?\n" + email)) return;
+  const btn = document.getElementById("sendSingleEmailBtn");
+  if (btn) { btn.disabled = true; btn.textContent = "..."; }
+  showLoading(true);
+  setStatus("Sending to " + email + "...");
+  google.script.run
+    .withSuccessHandler(function(result) {
+      showLoading(false);
+      if (btn) { btn.disabled = false; btn.textContent = "Send"; }
+      if (result && result.success) {
+        setStatus("Indent sent only to " + email + ".");
+        alert("✅ Email sent successfully\n\nTo: " + email + "\nIndent: " + result.indentNumber + "\nPDF: " + result.pdfName);
+      } else {
+        setStatus("Email send failed.");
+        alert("ইমেইল পাঠানো যায়নি। আবার চেষ্টা করুন.");
+      }
+    })
+    .withFailureHandler(function(err) {
+      showLoading(false);
+      if (btn) { btn.disabled = false; btn.textContent = "Send"; }
+      const message = getErrorMessage(err);
+      setStatus("Error: " + message);
+      alert(message);
+    })
+    .sendIndentToSingleEmailWeb(
+      SESSION_TOKEN,
+      indent,
+      warehouse,
+      email,
+      document.getElementById("engineerSelect").value
+    );
+}
+
+/* =====================================================
+   SEARCH INDENT
+   ===================================================== */
+
+function searchIndent() {
+
+  document.getElementById(
+    "searchModal"
+  ).style.display =
+    "flex";
+
+
+  document.getElementById(
+    "searchIndentInput"
+  ).value =
+    document.getElementById(
+      "indentNumber"
+    ).value;
+
+
+  setTimeout(
+    function() {
+
+      document.getElementById(
+        "searchIndentInput"
+      ).focus();
+
+    },
+    100
+  );
+
+}
+
+
+
+/* =====================================================
+   PERFORM SEARCH
+   ===================================================== */
+
+function performSearch() {
+
+  const indent =
+    document.getElementById(
+      "searchIndentInput"
+    ).value.trim();
+
+
+  if (!indent) {
+
+    alert(
+      "Indent Number দিন."
+    );
+
+    return;
+  }
+
+
+  closeModal(
+    "searchModal"
+  );
+
+
+  showLoading(true);
+
+
+  setStatus(
+    "Searching indent..."
+  );
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(data) {
+
+        showLoading(false);
+
+
+        if (!data) {
+
+          alert(
+            "Indent পাওয়া যায়নি."
+          );
+
+          return;
+        }
+
+
+        loadIndentToForm(
+          data
+        );
+
+
+        setStatus(
+          "Indent loaded: " +
+          data.indentNumber
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+
+        alert(
+          getErrorMessage(err)
+        );
+
+
+        setStatus(
+          "Search failed."
+        );
+
+      }
+    )
+
+    .searchIndentWeb(
+
+      SESSION_TOKEN,
+
+      indent
+
+    );
+
+}
+
+
+
+/* =====================================================
+   LOAD INDENT TO FORM
+   ===================================================== */
+
+function loadIndentToForm(
+  data
+) {
+
+  if (
+    data.date
+  ) {
+
+    document.getElementById(
+      "date"
+    ).value =
+      convertDateForInput(
+        data.date
+      );
+
+  }
+
+
+  document.getElementById(
+    "indentNumber"
+  ).value =
+    data.indentNumber ||
+    "";
+
+
+  document.getElementById(
+    "sideIndent"
+  ).value =
+    data.indentNumber ||
+    "";
+
+
+  document.getElementById(
+    "equipment"
+  ).value =
+    data.equipment ||
+    "";
+
+
+  document.getElementById(
+    "presentHour"
+  ).value =
+    data.presentHour ||
+    "";
+
+
+  clearMaterialRows();
+
+
+  const savedItems = data.items || [];
+  while (document.querySelectorAll("#materialBody tr").length < Math.max(10, savedItems.length)) {
+    addMaterialRow();
+  }
+  const rows = document.querySelectorAll("#materialBody tr");
+
+  savedItems.forEach(
+      (item, i) => {
+
+        const row =
+          rows[i];
+
+
+        if (!row) {
+          return;
+        }
+
+
+        row.querySelector(
+          ".material"
+        ).value =
+          item.material ||
+          "";
+
+
+        row.querySelector(
+          ".unit"
+        ).value =
+          item.unit ||
+          "";
+        delete row.querySelector(".unit").dataset.autoFilled;
+
+
+        row.querySelector(
+          ".require"
+        ).value =
+          item.requireQty ||
+          "";
+
+
+        row.querySelector(
+          ".stock"
+        ).value =
+          item.presentStock ||
+          "";
+
+
+        row.querySelector(
+          ".actual"
+        ).value =
+          item.actual ||
+          "0";
+
+
+        row.querySelector(
+          ".remarks"
+        ).value =
+          item.remarks ||
+          "";
+
+      }
+    );
+
+  renumberMaterialRows();
+  calculateTotal();
+
+}
+
+
+
+/* =====================================================
+   DATE CONVERSION
+   ===================================================== */
+
+function convertDateForInput(
+  value
+) {
+
+  if (!value) {
+    return "";
+  }
+
+
+  const text =
+    String(value).trim();
+
+
+  /*
+   * yyyy-mm-dd
+   */
+
+  if (
+    /^\d{4}-\d{2}-\d{2}$/.test(
+      text
+    )
+  ) {
+
+    return text;
+
+  }
+
+
+  /*
+   * dd/mm/yyyy
+   */
+
+  let m =
+    text.match(
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+    );
+
+
+  if (m) {
+
+    return (
+      m[3] +
+      "-" +
+      String(m[2]).padStart(2,"0") +
+      "-" +
+      String(m[1]).padStart(2,"0")
+    );
+
+  }
+
+
+  /*
+   * Google date text
+   */
+
+  const d =
+    new Date(text);
+
+
+  if (
+    !isNaN(
+      d.getTime()
+    )
+  ) {
+
+    return (
+      d.getFullYear() +
+      "-" +
+      String(
+        d.getMonth() + 1
+      ).padStart(2,"0") +
+      "-" +
+      String(
+        d.getDate()
+      ).padStart(2,"0")
+    );
+
+  }
+
+
+  return "";
+
+}
+
+
+
+/* =====================================================
+   ADMIN USER MANAGEMENT
+   ===================================================== */
+
+function openUserManagement() {
+
+  if (
+    !CURRENT_USER ||
+    String(
+      CURRENT_USER.role
+    ).toLowerCase() !==
+    "admin"
+  ) {
+
+    alert(
+      "শুধু Admin এই কাজটি করতে পারবেন."
+    );
+
+    return;
+  }
+
+
+  document.getElementById(
+    "userModal"
+  ).style.display =
+    "flex";
+
+
+  loadUsers();
+
+}
+
+
+
+/* =====================================================
+   LOAD USERS
+   ===================================================== */
+
+function loadUsers() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(users) {
+
+        renderUsers(
+          users || []
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        document.getElementById(
+          "usersContainer"
+        ).innerHTML =
+
+          "<p>" +
+          escapeHtml(
+            getErrorMessage(err)
+          ) +
+          "</p>";
+
+      }
+    )
+
+    .adminGetUsers(
+      SESSION_TOKEN
+    );
+
+}
+
+
+
+/* =====================================================
+   RENDER USERS
+   ===================================================== */
+
+function renderUsers(
+  users
+) {
+
+  let html = `
+
+    <table class="users-table">
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Name
+          </th>
+
+          <th>
+            Email
+          </th>
+
+          <th>
+            Role
+          </th>
+
+          <th>
+            Action
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+  `;
+
+
+  users.forEach(
+    user => {
+
+      html += `
+
+        <tr>
+
+          <td>
+            ${escapeHtml(
+              user.name
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              user.email
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              user.role
+            )}
+          </td>
+
+          <td>
+
+            <button
+              class="mini-btn reset-user"
+              onclick="resetUserPassword('${escapeJs(user.email)}')">
+              Reset
+            </button>
+
+            <button
+              class="mini-btn delete-user"
+              onclick="deleteUser('${escapeJs(user.email)}')">
+              Delete
+            </button>
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+  );
+
+
+  html += `
+
+      </tbody>
+
+    </table>
+
+  `;
+
+
+  document.getElementById(
+    "usersContainer"
+  ).innerHTML =
+    html;
+
+}
+
+
+
+/* =====================================================
+   ADD USER
+   ===================================================== */
+
+function addUser() {
+
+  const email =
+    document.getElementById(
+      "newUserEmail"
+    ).value.trim();
+
+
+  const name =
+    document.getElementById(
+      "newUserName"
+    ).value.trim();
+
+
+  const password =
+    document.getElementById(
+      "newUserPassword"
+    ).value;
+
+
+  const role =
+    document.getElementById(
+      "newUserRole"
+    ).value;
+
+
+  if (!email ||
+      !name ||
+      !password) {
+
+    alert(
+      "সব তথ্য দিন."
+    );
+
+    return;
+  }
+
+
+  showLoading(true);
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        alert(
+          result.message ||
+          "User created."
+        );
+
+
+        document.getElementById(
+          "newUserEmail"
+        ).value = "";
+
+
+        document.getElementById(
+          "newUserName"
+        ).value = "";
+
+
+        document.getElementById(
+          "newUserPassword"
+        ).value = "";
+
+
+        loadUsers();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .adminAddUser(
+
+      SESSION_TOKEN,
+
+      email,
+
+      password,
+
+      name,
+
+      role
+
+    );
+
+}
+
+
+
+/* =====================================================
+   RESET PASSWORD
+   ===================================================== */
+
+function resetUserPassword(
+  email
+) {
+
+  const password =
+    prompt(
+      "New password দিন:"
+    );
+
+
+  if (!password) {
+    return;
+  }
+
+
+  showLoading(true);
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+        alert(
+          result.message ||
+          "Password reset successful."
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .adminResetPassword(
+
+      SESSION_TOKEN,
+
+      email,
+
+      password
+
+    );
+
+}
+
+
+
+/* =====================================================
+   DELETE USER
+   ===================================================== */
+
+function deleteUser(
+  email
+) {
+
+  if (
+    !confirm(
+      "এই User delete করবেন?\n\n" +
+      email
+    )
+  ) {
+
+    return;
+  }
+
+
+  showLoading(true);
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        alert(
+          result.message ||
+          "User deleted."
+        );
+
+
+        loadUsers();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .adminDeleteUser(
+
+      SESSION_TOKEN,
+
+      email
+
+    );
+
+}
+
+
+
+/* =====================================================
+   CHANGE PASSWORD MODAL
+   ===================================================== */
+
+function openPasswordModal() {
+
+  document.getElementById(
+    "passwordModal"
+  ).style.display =
+    "flex";
+
+}
+
+
+
+/* =====================================================
+   CHANGE PASSWORD
+   ===================================================== */
+
+function changePassword() {
+
+  const oldPassword =
+    document.getElementById(
+      "oldPassword"
+    ).value;
+
+
+  const newPassword =
+    document.getElementById(
+      "newPassword"
+    ).value;
+
+
+  const confirmPassword =
+    document.getElementById(
+      "confirmPassword"
+    ).value;
+
+
+  if (!oldPassword ||
+      !newPassword) {
+
+    alert(
+      "সব Password দিন."
+    );
+
+    return;
+  }
+
+
+  if (
+    newPassword !==
+    confirmPassword
+  ) {
+
+    alert(
+      "New password এবং confirm password একই নয়."
+    );
+
+    return;
+  }
+
+
+  showLoading(true);
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        showLoading(false);
+
+
+        alert(
+          result.message ||
+          "Password changed."
+        );
+
+
+        closeModal(
+          "passwordModal"
+        );
+
+
+        document.getElementById(
+          "oldPassword"
+        ).value = "";
+
+
+        document.getElementById(
+          "newPassword"
+        ).value = "";
+
+
+        document.getElementById(
+          "confirmPassword"
+        ).value = "";
+
+      }
+    )
+
+    .withFailureHandler(
+      function(err) {
+
+        showLoading(false);
+
+        alert(
+          getErrorMessage(err)
+        );
+
+      }
+    )
+
+    .changeMyPassword(
+
+      SESSION_TOKEN,
+
+      oldPassword,
+
+      newPassword
+
+    );
+
+}
+
+
+
+/* =====================================================
+   MODAL CLOSE
+   ===================================================== */
+
+function closeModal(
+  id
+) {
+
+  document.getElementById(
+    id
+  ).style.display =
+    "none";
+
+}
+
+
+
+/* =====================================================
+   LOADING
+   ===================================================== */
+
+function showLoading(
+  show
+) {
+
+  document.getElementById(
+    "loading"
+  ).style.display =
+    show
+      ? "flex"
+      : "none";
+
+}
+
+
+
+/* =====================================================
+   STATUS
+   ===================================================== */
+
+function setStatus(
+  message
+) {
+
+  document.getElementById(
+    "statusText"
+  ).textContent =
+    message;
+
+}
+
+
+
+/* =====================================================
+   LOGIN ERROR
+   ===================================================== */
+
+function showLoginError(
+  message
+) {
+
+  const el =
+    document.getElementById(
+      "loginError"
+    );
+
+
+  el.textContent =
+    message;
+
+
+  el.style.display =
+    "block";
+
+}
+
+
+
+/* =====================================================
+   ERROR MESSAGE
+   ===================================================== */
+
+function getErrorMessage(
+  err
+) {
+
+  if (!err) {
+    return "Unknown error.";
+  }
+
+
+  if (
+    typeof err ===
+    "string"
+  ) {
+
+    return err;
+
+  }
+
+
+  return (
+    err.message ||
+    String(err)
+  );
+
+}
+
+
+
+/* =====================================================
+   HTML ESCAPE
+   ===================================================== */
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value == null
+      ? ""
+      : value
+  )
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+
+/* =====================================================
+   JAVASCRIPT ESCAPE
+   ===================================================== */
+
+function escapeJs(
+  value
+) {
+
+  return String(
+    value || ""
+  )
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    );
+
+}
+
+
+
+/* =====================================================
+   CLICK OUTSIDE MODAL
+   ===================================================== */
+
+window.addEventListener(
+  "click",
+  function(event) {
+
+    [
+      "userModal",
+      "passwordModal",
+      "searchModal"
+    ]
+    .forEach(
+      id => {
+
+        const modal =
+          document.getElementById(
+            id
+          );
+
+
+        if (
+          event.target ===
+          modal
+        ) {
+
+          modal.style.display =
+            "none";
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+</script>
+
+
+<div id="appMessageOverlay" role="dialog" aria-modal="true" aria-labelledby="appMessageTitle">
+  <div id="appMessageBox">
+    <div id="appMessageTitle">MPDP Material Indent</div>
+    <div id="appMessageText"></div>
+    <div id="appMessageActions">
+      <button id="appMessageCancel" type="button" style="display:none">Cancel</button>
+      <button id="appMessageOk" type="button">OK</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay=document.getElementById('appMessageOverlay');
+  var message=document.getElementById('appMessageText');
+  var ok=document.getElementById('appMessageOk');
+  var cancel=document.getElementById('appMessageCancel');
+  var pending=null;
+  function show(text, isConfirm){
+    message.textContent=String(text == null ? '' : text);
+    cancel.style.display=isConfirm?'inline-block':'none';
+    overlay.style.display='flex';
+    return new Promise(function(resolve){
+      pending=resolve;
+      ok.focus();
+    });
+  }
+  function finish(value){
+    overlay.style.display='none';
+    if(pending){var r=pending;pending=null;r(value);}
+  }
+  ok.addEventListener('click',function(){finish(true);});
+  cancel.addEventListener('click',function(){finish(false);});
+  document.addEventListener('keydown',function(e){
+    if(overlay.style.display==='flex' && e.key==='Escape' && cancel.style.display!=='none'){finish(false);}
+    else if(overlay.style.display==='flex' && e.key==='Enter'){finish(true);}
+  });
+  window.appMessageConfirm=function(text){return show(text,true);};
+  // Route existing alert messages to the branded in-page dialog (no browser URL shown).
+  window.alert=function(text){show(text,false);};
+})();
+</script>
+
+<!-- GitHub Pages to Google Apps Script bridge -->
+<script src="./js/config.js"></script>
+<script src="./js/gas-bridge.js"></script>
+</body>
+</html>
