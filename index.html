@@ -2535,6 +2535,135 @@
 
 
 
+
+<!-- MPDP GAS BRIDGE CLIENT: required because this UI is hosted on GitHub Pages. -->
+<iframe id="mpdpGasBridgeFrame"
+  src="https://script.google.com/macros/s/AKfycbxIDxFgpi7LphPahBd2nfpiBfRecYQX1NFQ46jOWs1exy7YiJlulgfK5QovcWAi0eM/exec"
+  title="MPDP backend connection"
+  aria-hidden="true"
+  tabindex="-1"
+  style="position:absolute;width:1px;height:1px;border:0;left:-10000px;top:-10000px;">
+</iframe>
+<script>
+(function installMpdpGasBridge() {
+  "use strict";
+  var CHANNEL = "MPDP_GAS_BRIDGE";
+  var frame = document.getElementById("mpdpGasBridgeFrame");
+  var ready = false;
+  var queue = [];
+  var callbacks = Object.create(null);
+  var sequence = 0;
+  var currentSuccess = null;
+  var currentFailure = null;
+  var timeoutMs = 45000;
+
+  function deliver(call) {
+    if (!ready || !frame || !frame.contentWindow) {
+      queue.push(call);
+      return;
+    }
+    callbacks[call.id] = {
+      success: call.success,
+      failure: call.failure,
+      timer: setTimeout(function () {
+        var cb = callbacks[call.id];
+        if (!cb) return;
+        delete callbacks[call.id];
+        if (typeof cb.failure === "function") {
+          cb.failure(new Error("Backend response timed out. Check Apps Script deployment and access permissions."));
+        }
+      }, timeoutMs)
+    };
+    frame.contentWindow.postMessage({
+      channel: CHANNEL,
+      type: "CALL",
+      id: call.id,
+      method: call.method,
+      args: call.args
+    }, "*");
+  }
+
+  function flushQueue() {
+    while (ready && queue.length) deliver(queue.shift());
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!frame || event.source !== frame.contentWindow) return;
+    var msg = event.data || {};
+    if (msg.channel !== CHANNEL) return;
+
+    if (msg.type === "READY") {
+      ready = true;
+      flushQueue();
+      return;
+    }
+    if (msg.type !== "RESULT" || !msg.id) return;
+
+    var cb = callbacks[msg.id];
+    if (!cb) return;
+    clearTimeout(cb.timer);
+    delete callbacks[msg.id];
+
+    if (msg.ok) {
+      if (typeof cb.success === "function") cb.success(msg.result);
+    } else if (typeof cb.failure === "function") {
+      cb.failure(new Error(msg.error || "Backend request failed."));
+    }
+  });
+
+  // Emulates the google.script.run chaining syntax used throughout this UI.
+  var runner = new Proxy({}, {
+    get: function (_target, property) {
+      if (property === "withSuccessHandler") {
+        return function (fn) {
+          currentSuccess = typeof fn === "function" ? fn : null;
+          return runner;
+        };
+      }
+      if (property === "withFailureHandler") {
+        return function (fn) {
+          currentFailure = typeof fn === "function" ? fn : null;
+          return runner;
+        };
+      }
+      if (property === "withUserObject") {
+        return function () { return runner; };
+      }
+      if (property === "toString") return function () { return "[MPDP GAS Bridge]"; };
+
+      return function () {
+        var call = {
+          id: "mpdp_" + Date.now().toString(36) + "_" + (++sequence),
+          method: String(property),
+          args: Array.prototype.slice.call(arguments),
+          success: currentSuccess,
+          failure: currentFailure
+        };
+        currentSuccess = null;
+        currentFailure = null;
+        deliver(call);
+      };
+    }
+  });
+
+  window.google = window.google || {};
+  window.google.script = window.google.script || {};
+  window.google.script.run = runner;
+
+  // If the iframe fails to load, queued calls still fail visibly instead of
+  // leaving the login screen stuck on "Processing...".
+  setTimeout(function () {
+    if (ready) return;
+    var pending = queue.splice(0);
+    pending.forEach(function (call) {
+      if (typeof call.failure === "function") {
+        call.failure(new Error("Backend bridge did not connect. Confirm the Apps Script Web App is deployed as Anyone with the link and the Bridge file is saved."));
+      }
+    });
+  }, 20000);
+})();
+</script>
+
 <script>
 
 /* =====================================================
