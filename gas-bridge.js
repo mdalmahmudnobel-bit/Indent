@@ -1,7 +1,7 @@
 /* =========================================================
    MPDP MATERIAL INDENT - GOOGLE APPS SCRIPT RPC BRIDGE
-   Provides the same google.script.run chaining API used by
-   the original HTML, without changing its application logic.
+   Option 2: Execute as User accessing the web app.
+   Preserves the existing google.script.run-style API.
    ========================================================= */
 (function () {
   "use strict";
@@ -14,7 +14,9 @@
   var requestId = 0;
   var pending = Object.create(null);
   var queued = [];
+  var handshakeTimer = null;
 
+  // Keep this list synchronized with Bridge.html.
   var allowedMethods = new Set([
     "getMaterialSuggestionsWeb",
     "getEquipmentMaterialHistoryWeb",
@@ -46,35 +48,90 @@
     if (!el) {
       el = document.createElement("div");
       el.id = "gasBridgeError";
-      el.style.cssText = "position:fixed;z-index:999999;left:12px;right:12px;bottom:12px;background:#7f1d1d;color:#fff;padding:12px 16px;border-radius:6px;font:13px Arial;box-shadow:0 3px 15px #0004";
+      el.style.cssText =
+        "position:fixed;z-index:999999;left:12px;right:12px;bottom:12px;" +
+        "background:#7f1d1d;color:#fff;padding:12px 16px;border-radius:7px;" +
+        "font:13px/1.45 Arial,sans-serif;box-shadow:0 3px 15px #0004;";
       document.body.appendChild(el);
     }
-    el.textContent = message;
+    el.textContent = message + " ";
+
+    var auth = document.createElement("button");
+    auth.type = "button";
+    auth.textContent = "Google Authorization খুলুন";
+    auth.style.cssText = "margin:8px 8px 0 0;padding:8px 12px;border:0;border-radius:5px;cursor:pointer;font-weight:bold";
+    auth.onclick = function () {
+      // User must authorize in a top-level tab; third-party iframe auth can be blocked.
+      window.open(gasUrl, "_blank", "noopener");
+    };
+    el.appendChild(auth);
+
+    var retry = document.createElement("button");
+    retry.type = "button";
+    retry.textContent = "Reconnect";
+    retry.style.cssText = "margin:8px 0 0;padding:8px 12px;border:0;border-radius:5px;background:#facc15;color:#111;cursor:pointer;font-weight:bold";
+    retry.onclick = function () {
+      removeFrame();
+      initFrame();
+    };
+    el.appendChild(retry);
+  }
+
+  function clearBridgeError() {
+    var el = document.getElementById("gasBridgeError");
+    if (el) el.remove();
+  }
+
+  function removeFrame() {
+    ready = false;
+    if (handshakeTimer) {
+      clearTimeout(handshakeTimer);
+      handshakeTimer = null;
+    }
+    if (frame && frame.parentNode) frame.parentNode.removeChild(frame);
+    frame = null;
   }
 
   function initFrame() {
-    if (!gasUrl || gasUrl.indexOf("PASTE_YOUR_") === 0) {
-      showBridgeError("Setup required: add your deployed Google Apps Script Web App URL in js/config.js.");
-      return;
-    }
-    try {
-      new URL(gasUrl);
-    } catch (e) {
-      showBridgeError("The Google Apps Script Web App URL in js/config.js is invalid.");
+    if (!gasUrl || !/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec(?:\?.*)?$/.test(gasUrl)) {
+      showBridgeError("Invalid Apps Script Web App URL. Check config.js.");
       return;
     }
 
+    removeFrame();
     frame = document.createElement("iframe");
     frame.id = "mpdpGasBridgeFrame";
-    frame.title = "MPDP backend connection";
+    frame.title = "MPDP Google Apps Script Backend";
     frame.setAttribute("aria-hidden", "true");
     frame.tabIndex = -1;
-    frame.style.cssText = "position:absolute;width:1px;height:1px;left:-10000px;top:-10000px;border:0;visibility:hidden";
-    frame.src = gasUrl;
-    frame.onerror = function () {
-      showBridgeError("Could not load the Google Apps Script bridge. Check deployment access and URL.");
+    frame.style.cssText =
+      "position:absolute;width:1px;height:1px;left:-10000px;top:-10000px;" +
+      "border:0;visibility:hidden";
+
+    frame.onload = function () {
+      if (!frame || !frame.contentWindow) return;
+      // Explicit handshake lets Bridge reply to the exact GitHub Pages origin.
+      frame.contentWindow.postMessage({
+        channel: "MPDP_GAS_BRIDGE",
+        type: "HELLO"
+      }, "*");
     };
+
+    frame.onerror = function () {
+      showBridgeError("Could not load Apps Script. Check the deployment URL and Google account authorization.");
+    };
+
+    frame.src = gasUrl;
     document.body.appendChild(frame);
+
+    handshakeTimer = setTimeout(function () {
+      if (!ready) {
+        showBridgeError(
+          "Google Authentication required or the backend bridge did not become ready. " +
+          "Open Google Authorization in a new tab, complete consent, return here, then press Reconnect."
+        );
+      }
+    }, 18000);
   }
 
   function flushQueue() {
@@ -83,16 +140,19 @@
   }
 
   function sendRequest(request) {
-    if (!frame || !frame.contentWindow) {
+    if (!ready || !frame || !frame.contentWindow) {
       queued.push(request);
       return;
     }
+
     var id = "mpdp_" + (++requestId) + "_" + Date.now();
     var timer = setTimeout(function () {
       if (!pending[id]) return;
       var item = pending[id];
       delete pending[id];
-      if (item.failure) item.failure({ message: "Backend request timed out. Please check your connection and try again." });
+      if (item.failure) {
+        item.failure({ message: "Backend request timed out. Please reconnect and try again." });
+      }
     }, timeoutMs);
 
     pending[id] = { success: request.success, failure: request.failure, timer: timer };
@@ -118,6 +178,11 @@
 
     if (msg.type === "READY") {
       ready = true;
+      if (handshakeTimer) {
+        clearTimeout(handshakeTimer);
+        handshakeTimer = null;
+      }
+      clearBridgeError();
       flushQueue();
       return;
     }
@@ -128,8 +193,8 @@
     delete pending[msg.id];
     if (msg.ok) {
       if (item.success) item.success(msg.result);
-    } else {
-      if (item.failure) item.failure({ message: msg.error || "Unknown backend error" });
+    } else if (item.failure) {
+      item.failure({ message: msg.error || "Unknown backend error" });
     }
   });
 
@@ -148,7 +213,12 @@
             if (failure) failure({ message: "Backend method is not allowed: " + property });
             return;
           }
-          sendRequest({ method: property, args: Array.prototype.slice.call(arguments), success: success, failure: failure });
+          sendRequest({
+            method: property,
+            args: Array.prototype.slice.call(arguments),
+            success: success,
+            failure: failure
+          });
         };
       }
     });
@@ -157,7 +227,7 @@
   window.google = window.google || {};
   window.google.script = window.google.script || {};
   Object.defineProperty(window.google.script, "run", {
-    configurable: false,
+    configurable: true,
     enumerable: true,
     get: function () { return runner(null, null); }
   });
