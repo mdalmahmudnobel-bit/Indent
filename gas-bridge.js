@@ -62,7 +62,8 @@
     auth.style.cssText = "margin:8px 8px 0 0;padding:8px 12px;border:0;border-radius:5px;cursor:pointer;font-weight:bold";
     auth.onclick = function () {
       // User must authorize in a top-level tab; third-party iframe auth can be blocked.
-      window.open(gasUrl, "_blank", "noopener");
+      var authUrl = gasUrl + (gasUrl.indexOf("?") >= 0 ? "&" : "?") + "auth=1";
+      window.open(authUrl, "_blank");
     };
     el.appendChild(auth);
 
