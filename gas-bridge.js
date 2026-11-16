@@ -15,6 +15,7 @@
   var pending = Object.create(null);
   var queued = [];
   var handshakeTimer = null;
+  var helloTimer = null;
 
   // Keep this list synchronized with Bridge.html.
   var allowedMethods = new Set([
@@ -89,6 +90,10 @@
       clearTimeout(handshakeTimer);
       handshakeTimer = null;
     }
+    if (helloTimer) {
+      clearInterval(helloTimer);
+      helloTimer = null;
+    }
     if (frame && frame.parentNode) frame.parentNode.removeChild(frame);
     frame = null;
   }
@@ -109,13 +114,23 @@
       "position:absolute;width:1px;height:1px;left:-10000px;top:-10000px;" +
       "border:0;visibility:hidden";
 
+    function sendHello() {
+      if (ready || !frame || !frame.contentWindow) return;
+      // Retry because Apps Script may redirect script.google.com to a
+      // script.googleusercontent.com host before the bridge is fully loaded.
+      try {
+        frame.contentWindow.postMessage({
+          channel: "MPDP_GAS_BRIDGE",
+          type: "HELLO"
+        }, "*");
+      } catch (err) {
+        // The next retry will attempt the handshake again.
+      }
+    }
+
     frame.onload = function () {
-      if (!frame || !frame.contentWindow) return;
-      // Explicit handshake lets Bridge reply to the exact GitHub Pages origin.
-      frame.contentWindow.postMessage({
-        channel: "MPDP_GAS_BRIDGE",
-        type: "HELLO"
-      }, "*");
+      sendHello();
+      if (!helloTimer) helloTimer = setInterval(sendHello, 700);
     };
 
     frame.onerror = function () {
@@ -128,11 +143,11 @@
     handshakeTimer = setTimeout(function () {
       if (!ready) {
         showBridgeError(
-          "Google Authentication required or the backend bridge did not become ready. " +
-          "Open Google Authorization in a new tab, complete consent, return here, then press Reconnect."
+          "Backend bridge did not become ready. Confirm that the deployed Apps Script URL is correct, " +
+          "the deployment is accessible to Google accounts, and authorization completed. Then press Reconnect."
         );
       }
-    }, 18000);
+    }, 25000);
   }
 
   function flushQueue() {
@@ -182,6 +197,10 @@
       if (handshakeTimer) {
         clearTimeout(handshakeTimer);
         handshakeTimer = null;
+      }
+      if (helloTimer) {
+        clearInterval(helloTimer);
+        helloTimer = null;
       }
       clearBridgeError();
       flushQueue();
